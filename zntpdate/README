@@ -1,0 +1,18 @@
+This is zntpdate for SCO and Linux
+
+Contents:
+	zntpdate	tool to update date/time with offset options
+
+Requires:
+	Working compiler, libc and socket lib.
+
+Installation:
+	Do "./configure --help" and decide what options you want. The
+	default should be suitable for most SCO and Linux systems.
+	Then run the configure script.
+
+	Do "make" to compile zntpdate.
+	Then (as root) do "make install".
+
+Jean-Michel Marino
+29 Februray 2008
