@@ -79,7 +79,6 @@ int ntpdate(void)
   struct sockaddr_in server_addr;     // the socket structure
 
   int	 s = -1;                       // socket
-  //int	tmit = -1;                    // the time -- This is a time_t sort of
   time_t tmit = -1;                    // the time -- This is a time_t sort of
 
 
@@ -190,16 +189,16 @@ int ntpdate(void)
   
   //We get 12 long words back in Network order
   if( gAppOptions.m_verbose) {
-	char refID[4+1];
+	//	char refID[4+1];
 	u_long id = ntohl(buf[3]);
 
-	memset( &refID, 0, sizeof(refID));
-	refID[0] = (char)((id & 0xFF000000) >> 24);
-	refID[1] = (char)((id & 0x00FF0000) >> 16);
-	refID[2] = (char)((id & 0x0000FF00) >> 8);
-	refID[3] = (char)(id & 0xFF0000FF);
+	//memset( &refID, 0, sizeof(refID));
+	//refID[0] = (char)((id & 0xFF000000) >> 24);
+	//refID[1] = (char)((id & 0x00FF0000) >> 16);
+	//refID[2] = (char)((id & 0x0000FF00) >> 8);
+	//refID[3] = (char)(id & 0xFF0000FF);
 
-	trace_write( gAppTrace, "NTP.RefID: '%s'", refID);
+	trace_write( gAppTrace, "NTP.RefID: '0x%x'", id);
 	
 	/*
 	  for( i = 0 ; i < 12 ; i++)

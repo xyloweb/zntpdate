@@ -72,7 +72,7 @@
 
 /* -- global variables -- */
 
-const char   *gAppVersion = "zntpdate v0.4.2";  /*!< Application version.   */
+const char   *gAppVersion = "zntpdate v0.4.3";  /*!< Application version.   */
 
 options_t    gAppOptions;                       /*!< Application options.   */
 trace_desc_t *gAppTrace;                        /*!< Structure of trace     */
@@ -289,7 +289,10 @@ static void usage(void)
 		   "              general debugging will also be printed.\n"
 		   "  .help/version:\n"
 		   "     -h       Show this command summary.\n"
-		   "     -V       Show program version.\n");
+		   "     -V       Show program version.\n"
+		   "Example:\n"
+		   "  zntpdate -vd pool.ntp.org\n"
+		   );
   exit(0);
 }
 

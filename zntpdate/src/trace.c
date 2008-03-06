@@ -36,21 +36,21 @@
 trace_desc_t *trace_init( TraceType tt)
 {
   trace_desc_t *id = NULL;
-
+  
   id = (trace_desc_t *)calloc( (size_t)1, sizeof(id));
   if(NULL == id) fprintf(stderr, "+++ trace init failed");
-
+  
   id->m_type = tt;
   switch(tt) {
-    case eSyslog:
+  case eSyslog:
     { openlog("zntpdate", 0, LOG_USER);
     } break;
 	
-    case eStdout:
+  case eStdout:
     { id->m_file = stdout;
     } break;
 	
-    default:
+  default:
     { fprintf(stderr, "+++ type not implemented");
     } break;
   }
@@ -76,16 +76,16 @@ void trace_close( trace_desc_t **logID)
 
   tt = (*logID)->m_type;
   switch(tt) {
-    case eSyslog:
+  case eSyslog:
     { closelog();
     }	break;
 	
-    case eStdout:
+  case eStdout:
     { fprintf((*logID)->m_file, "\n#### END ####\n");
       fflush((*logID)->m_file);
     } break;
 	
-    default:
+  default:
     { fprintf(stderr, "\n+++ type not implemented");
     } break;
   }
@@ -111,26 +111,25 @@ void trace_write( trace_desc_t *logID,  const char *format, ...)
   char logMess[ktLOGMESSMAXLEN+1];
   va_list pa;
 
-  if(!logID->m_file) goto DONE;
-
   va_start( pa, format);
   
   tt = logID->m_type;
   switch(tt) {
-    case eSyslog:
+  case eSyslog:
     { vsyslog( LOG_INFO, format, pa);
     } break;
-      
-    case eStdout:
-    { vsprintf( logMess, format, pa);
+    
+  case eStdout:
+	{ if(!logID->m_file) goto DONE;
+	  vsprintf( logMess, format, pa);
       fprintf( logID->m_file, "\n%s", logMess);
     } break;   
-   
-    default:
+	
+  default:
     {  fprintf(stderr, "\n+++ type not implemented");
     } break;
   }
-
+  
 DONE:
   va_end(pa);
 }
