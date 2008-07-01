@@ -38,14 +38,17 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#include <errno.h>          // for perror
-#include <sys/select.h>     // for timeval struct
+#include <errno.h>                 // for perror
+#include <sys/select.h>            // for timeval struct
+#include <time.h>                  // for mktime and struct tm
 
 #include "main.h"
 #include "trace.h"
 
-#define MAXLEN	    1024    // check our buffers
-#define NTPMODETYPE 3       // NTP mode type client
+#define MAXLEN	             1024  // check our buffers
+#define NTPMODETYPE             3  // NTP mode type client
+#define SUMMERTIMEMONTHBEGIN    3  // European Summer Time begin at March
+#define SUMMERTIMEMONTHEND     10  // European Summer Time end at October
 
 /* -- GLOBALES -- */
 extern options_t     gAppOptions;
@@ -58,6 +61,37 @@ enum ntp_version {
 
 };
 static int NTP_MODE_TYPE = 003;
+
+
+/*
+  fonction qui calcul la date de début et de fin de la période des horaires
+  d'été pour l'Europe.
+*/
+static int EuropeanSummerTime( const int year, time_t *begin, time_t *end)
+{  
+  struct tm st;
+  
+  /* l'algo n'est valable que jusqu'en 2099 !!! */
+  if(year > 2099) return -1;
+
+  /* start of summer time */
+  memset( &st, 0, sizeof(st));
+  st.tm_hour = 1;                             // 0-23 (1 heure GMT0)
+  st.tm_year = year - 1900;                   // years since 1900
+  st.tm_mday = 31 - (5 * year / 4 + 4) % 7;   // 1-31
+  st.tm_mon = SUMMERTIMEMONTHBEGIN - 1;       // 0-11
+  *begin = mktime( &st);
+
+  /* end of summer time */
+  memset( &st, 0, sizeof(st));
+  st.tm_hour = 1;                             // 0-23 (1 heure GMT0)
+  st.tm_year = year - 1900;                   // years since 1900
+  st.tm_mday = 31 - (5 * year / 4 + 1) % 7;
+  st.tm_mon = SUMMERTIMEMONTHEND - 1;
+  *end = mktime( &st);
+
+  return 0;
+}
 
 /*
   fonction principale ntpdate
@@ -96,8 +130,7 @@ int ntpdate(void)
   s = socket( PF_INET, SOCK_DGRAM, proto->p_proto);
   if( s && gAppOptions.m_verbose ) {
   	//perror("asd");
-	trace_write( gAppTrace,
-				 "Socket [%d]",s);
+	trace_write( gAppTrace, "Socket [%d]",s);
   }
   
   // get ip address
@@ -145,32 +178,27 @@ int ntpdate(void)
   msg[0] += NTPMODETYPE;
 
   if( gAppOptions.m_verbose) {
-	trace_write( gAppTrace,
-				 "NTP version: %d", gAppOptions.m_version);
+	trace_write( gAppTrace, "NTP version: %d", gAppOptions.m_version);
   }
   
   i=sendto(s,msg,sizeof(msg),0,(struct sockaddr *)&server_addr,sizeof(server_addr));
   if(i == -1) {
 	err = errno;
 	if( gAppOptions.m_verbose) {
-	  trace_write( gAppTrace,
-				   "sendto: [error %d]", err);
-	  trace_write( gAppTrace,
-				   "sendto: %s", strerror(err));
+	  trace_write( gAppTrace, "sendto: [error %d]", err);
+	  trace_write( gAppTrace, "sendto: %s", strerror(err));
 	}
     goto BAIL;
   }
   else {
 	if( gAppOptions.m_verbose) {
-	  trace_write( gAppTrace,
-				   "Connect to %s: OK", hostname);
+	  trace_write( gAppTrace, "Connect to %s: OK", hostname);
 	}
   }
 
   // get the data back
   if( gAppOptions.m_verbose) {
-	trace_write( gAppTrace,
-				 "Attempt receive...");
+	trace_write( gAppTrace, "Attempt receive...");
 	trace_flush( gAppTrace);
   }
 
@@ -178,11 +206,9 @@ int ntpdate(void)
   if( i == -1) {
 	err = errno;
 	if( gAppOptions.m_verbose) {
-	  trace_write( gAppTrace,
-				   "recvfr %d",i);
+	  trace_write( gAppTrace, "recvfr %d",i);
 	  trace_flush( gAppTrace);
-	  trace_write( gAppTrace,
-				   "recvfr: %s", strerror(err));
+	  trace_write( gAppTrace, "recvfr: %s", strerror(err));
 	}
 	goto BAIL;
   }
@@ -200,12 +226,11 @@ int ntpdate(void)
 
 	trace_write( gAppTrace, "NTP.RefID: '0x%x'", id);
 	
-	/*
-	  for( i = 0 ; i < 12 ; i++)
-	  trace_write( gAppTrace,
-	  "%.2d\t%-8x\n", i, ntohl(buf[i]));
-	*/
-
+	if( gAppOptions.m_verbose) {
+	  for( i = 0 ; i < 12 ; i++) {
+		trace_write( gAppTrace, "%.2d\t0x%.8x", i, ntohl(buf[i]));
+	  }	
+	}
   }
   
   /*
@@ -216,8 +241,7 @@ int ntpdate(void)
   
   tmit = ntohl( (time_t)buf[10]);	//# get transmit time
   if( gAppOptions.m_verbose) {
-	trace_write( gAppTrace,
-				 "tmit(NTP)  = %d", tmit);
+	trace_write( gAppTrace, "tmit(NTP)  = %d", tmit);
   }
   
   /*
@@ -231,8 +255,7 @@ int ntpdate(void)
   
   tmit -= 2208988800U;	
   if( gAppOptions.m_verbose) {
-	trace_write( gAppTrace,
-				 "tmit(unix) = %d", tmit);
+	trace_write( gAppTrace, "tmit(unix) = %d", tmit);
   }
   
   /* use unix library function to show me the local time (it takes care
@@ -242,22 +265,52 @@ int ntpdate(void)
   
   /*  
    * add offset before set time of day
+   ***************************************************************************
    */
-  trace_write( gAppTrace,
-			   ">>>> Offset: %f", gAppOptions.m_offset);
+  trace_write( gAppTrace, ">>>> Offset: %f", gAppOptions.m_offset);
   tmit += gAppOptions.m_offset;
-  trace_write( gAppTrace,
-			   ">>>> Time: %s", ctime(&tmit));
+
+  /*
+   * add European Summer Time adjust if option -E is enabled
+   ***************************************************************************
+   */
+  if( gAppOptions.m_enableEST) {
+	time_t begin, end;
+	struct tm *ltime = localtime( &tmit);
+
+	err =  EuropeanSummerTime( ltime->tm_year + 1900, &begin, &end);
+	if( gAppOptions.m_verbose) {
+	  char *tmp = NULL;
+
+	  tmp = ctime(&begin);
+	  tmp[strlen(tmp)-1] = '\0';
+	  trace_write( gAppTrace, "European Summer Time start at: %s", tmp);
+
+	  tmp = ctime(&end);
+	  tmp[strlen(tmp)-1] = '\0';
+	  trace_write( gAppTrace, "European Summer Time end at  : %s", tmp);
+	}
+
+	if( tmit >= begin && tmit < end) {
+	  trace_write( gAppTrace, "EST is activated"); 
+	  tmit += 3600;
+	}
+  }
+
+  /*
+   * statistics
+   ***************************************************************************
+   */
+  trace_write( gAppTrace, ">>>> Time: %s", ctime(&tmit));
   i = time(0);
-  //printf("%d-%d=%d\n",i,tmit,i-tmit);
   /*
    * and compare time delta
    */  
-  trace_write( gAppTrace,
-			   "System time is %d seconds off",i-tmit);
-  
+  trace_write( gAppTrace, "System time is %d seconds off",i-tmit);
+
   /*
    * set time of day
+   ***************************************************************************
    */
   if( gAppOptions.m_debug ) {
 	trace_write( gAppTrace,

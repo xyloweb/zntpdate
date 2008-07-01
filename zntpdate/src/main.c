@@ -72,7 +72,7 @@
 
 /* -- global variables -- */
 
-const char   *gAppVersion = "zntpdate v0.4.3";  /*!< Application version.   */
+const char   *gAppVersion = "zntpdate v0.4.4";  /*!< Application version.   */
 
 options_t    gAppOptions;                       /*!< Application options.   */
 trace_desc_t *gAppTrace;                        /*!< Structure of trace     */
@@ -159,7 +159,8 @@ static int parse_cmd_line(int argc, char **argv)
 		case 'v': gAppOptions.m_verbose = 1; break;
 		case 'd': gAppOptions.m_debug = 1; break;
 		case 's': gAppOptions.m_syslog = 1; break;
-		  
+		case 'E': gAppOptions.m_enableEST = 1; break;
+
 		  //---- flags with parameter..
 		  //----
 		case 'O':
@@ -280,6 +281,7 @@ static void usage(void)
            "              can  be 1 or 2. The default is 3. This allows ntpdate to be used with older\n"
            "              NTP versions.\n"
 		   "     -O[+-]n  Offset to add before set date, indicate +/- value.\n"
+		   "     -E       Automatic EST, European Summer Time adjustment is activated.\n"
 		   "  .verbose/debug:\n"
 		   "     -d       Enable the debugging mode, in which zntpdate will go\n"
 		   "              through all the steps, but do not adjust the local clock.\n"
