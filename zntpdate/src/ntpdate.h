@@ -12,7 +12,6 @@
 #ifndef NTPDATE_H_
 #define NTPDATE_H_
 
-
 /*
  * prototypage
  */

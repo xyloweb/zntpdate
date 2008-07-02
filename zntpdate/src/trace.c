@@ -19,26 +19,73 @@
 #include <stdarg.h>
 #include <assert.h>
 #include <syslog.h>
+#include <time.h>   /* for function create_timestamp_msg */
 
 #include "trace.h"
+
+/* -- local functions -- */
+
+/*!
+  \brief "chug" the string (remove leading spaces and tab),
+  and "chomp" it (avoid \n on last field).
+  ****************************************************************** 
+  */
+static void str_chug_chomp( char *string)
+{
+  char *p;
+  size_t len;
+
+  for( p = string; (*p == '\t' || *p == ' '); p++);
+  len = strlen(p);
+  if(len > 0) {
+    for(; strchr( "\n", p[len]); len--);
+  }
+
+  memmove(string, p, len+1);
+  string[len+1] = '\0';
+}
+
+/*!
+  \brief create and time stamp to the string
+  ****************************************************************** 
+  */
+static char *create_timestamp_msg( const char *logMess)
+{
+	char *tmp = NULL;
+	time_t systime; 
+	struct tm *utc = NULL;
+ 
+    memset( &systime, 0, sizeof(systime));
+	systime = time(NULL); 
+	utc = localtime( &systime); 
+
+	if( NULL != (tmp = (char *)calloc(ktLOGMESSMAXLEN + 1, sizeof(char)))) {
+  	snprintf( tmp, ktLOGMESSMAXLEN, "%02d/%02d/%04d | %02d:%02d:%02d | %s",
+              utc->tm_mday, (1+utc->tm_mon), (1900+utc->tm_year),
+              utc->tm_hour, utc->tm_min, utc->tm_sec,
+              logMess );
+	}
+	
+	return tmp;
+}
 	
 /*!
   \brief Init trace structure
- *****************************************************
- 
- This function is the first you must use to init trace
- structure for use trace module.
- 
- \param tt the type of trace you want.
- \return new initialized structure
- 
- */
+  ****************************************************************** 
+  
+  This function is the first you must use to init trace
+  structure for use trace module.
+  
+  \param tt the type of trace you want.
+  \return new initialized structure or NULL if failed
+*/
 trace_desc_t *trace_init( TraceType tt)
 {
   trace_desc_t *id = NULL;
+  char *tmp = NULL;
   
   id = (trace_desc_t *)calloc( (size_t)1, sizeof(id));
-  if(NULL == id) fprintf(stderr, "+++ trace init failed");
+  if(NULL == id) fprintf(stderr, "\n%s trace init failed", gLogSignature[eERROR_MSG_TYPE]);
   
   id->m_type = tt;
   switch(tt) {
@@ -47,11 +94,17 @@ trace_desc_t *trace_init( TraceType tt)
     } break;
 	
   case eStdout:
-    { id->m_file = stdout;
+    {
+      char *msg = "log started";
+      id->m_file = stdout;
+      tmp = create_timestamp_msg( msg);
+      fprintf(id->m_file, "\n%s %s\n", gLogSignature[eINFO_MSG_TYPE],
+              tmp ? tmp : msg);
+      free(tmp);
     } break;
 	
   default:
-    { fprintf(stderr, "+++ type not implemented");
+    { fprintf(stderr, "\n%s log type not implemented.", gLogSignature[eERROR_MSG_TYPE]);
     } break;
   }
   
@@ -61,16 +114,16 @@ trace_desc_t *trace_init( TraceType tt)
 
 /*!
   \brief close trace struture
- *****************************************************
+   ******************************************************************
  
- Use this function to close your trace structure
- 
- \param logID address of your trace structure pointer
- 
- */
+   Use this function to close your trace structure
+   
+   \param logID address of your trace structure pointer 
+*/
 void trace_close( trace_desc_t **logID)
 {
   TraceType tt = -1;
+  char *tmp = NULL;
 
   assert( *logID);
 
@@ -78,15 +131,20 @@ void trace_close( trace_desc_t **logID)
   switch(tt) {
   case eSyslog:
     { closelog();
-    }	break;
+    } break;
 	
   case eStdout:
-    { fprintf((*logID)->m_file, "\n#### END ####\n");
-      fflush((*logID)->m_file);
+    {
+      char *msg = "log end.";
+      tmp = create_timestamp_msg( msg);    	
+      fprintf((*logID)->m_file, "\n\n%s %s\n", gLogSignature[eINFO_MSG_TYPE],
+              tmp ? tmp : msg);
+      free(tmp);
+      trace_flush( *logID);
     } break;
 	
   default:
-    { fprintf(stderr, "\n+++ type not implemented");
+    { fprintf(stderr, "\n%s log type not implemented.", gLogSignature[eERROR_MSG_TYPE]);
     } break;
   }
   
@@ -98,14 +156,14 @@ void trace_close( trace_desc_t **logID)
 
 /*!
   \brief Write a message into your trace
- *****************************************************
- 
- \param logID trace structure pointeur
- \param format message format
- \param ... the message
- 
- */
-void trace_write( trace_desc_t *logID,  const char *format, ...)
+  ******************************************************************
+  
+  \param logID   trace structure pointeur
+  \param msgType type of message \sa LogMsgType
+  \param format  message format
+  \param ...     the message 
+*/
+void trace_write( trace_desc_t *logID, LogMsgType msgType, const char *format, ...)
 {
   TraceType tt = -1;
   char logMess[ktLOGMESSMAXLEN+1];
@@ -120,13 +178,24 @@ void trace_write( trace_desc_t *logID,  const char *format, ...)
     } break;
     
   case eStdout:
-	{ if(!logID->m_file) goto DONE;
+	{ 
+      char *tmp = NULL;
+
+      if(!logID->m_file) goto DONE;
 	  vsprintf( logMess, format, pa);
-      fprintf( logID->m_file, "\n%s", logMess);
+      str_chug_chomp(logMess);
+
+      // ajout de la date
+      if( eWITH_TIMESTAMP & LOG_MSG_OPTION(msgType)) {
+        tmp = create_timestamp_msg( logMess );
+      }
+      fprintf( logID->m_file, "\n%s %s", gLogSignature[LOG_MSG_TYPE(msgType)], tmp ? tmp : logMess);
+      free(tmp);
+
     } break;   
 	
   default:
-    {  fprintf(stderr, "\n+++ type not implemented");
+    {  fprintf(stderr, "\n%s log type not implemented.", gLogSignature[eERROR_MSG_TYPE] );
     } break;
   }
   
@@ -134,6 +203,12 @@ DONE:
   va_end(pa);
 }
 
+/*!
+  \brief Flush trace
+  ******************************************************************
+  
+  \param logID trace structure pointeur
+*/
 void trace_flush( trace_desc_t *logID)
 {
   if(logID->m_type == eStdout) fflush(logID->m_file);
