@@ -1,0 +1,15 @@
+
+v0.4.6 - Jully 2008
+	Update log functions,
+	Added European Summer Time feature to automatically add 1 hour in summer time,
+	Added a timeout when I try to receive a response from the server NTP,
+	Documentation revised.
+
+v0.4.5 - June 2008
+	Intermediate version for test new features.
+
+v0.4.4 - June 2008
+	Intermediate version for test new features.
+	
+v0.4.3 - Februry 2008
+	First version.

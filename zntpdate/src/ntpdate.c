@@ -51,8 +51,8 @@
 #define SUMMERTIMEMONTHBEGIN    3  /*!< European Summer Time begin at March      */
 #define SUMMERTIMEMONTHEND     10  /*!< European Summer Time end at October      */
 
-#define TIMEOUT_SECS            5  /*!< time for waiting response of NTP Server  */
-#define NTP_MAXREQUEST_LEN     48  /*!< Longest string for NTP request           */
+#define TIMEOUT_SECS           10  /*!< time for waiting response of NTP Server  */
+#define NTP_MAXREQUEST_LEN     48  /*!< longest string for NTP request           */
 #define NTP_MAXREQUEST_TRIES    3  /*!< max retries to get response              */
 
 /* -- GLOBALES -- */
@@ -73,7 +73,7 @@ typedef enum ntp_version {
 static int NTP_MODE_TYPE = 003;
 
 
-int tries = 0;                      /* Count of times sent - GLOBAL for signal-handler access */
+int tries = 0;                     /* Count of times sent - GLOBAL for signal-handler access */
 
 /*!
   \brief Handler for SIGALRM
@@ -81,7 +81,7 @@ int tries = 0;                      /* Count of times sent - GLOBAL for signal-h
 
   \param ignored not used
 */
-static void CatchAlarm(int ignored) /* Handler for SIGALRM */
+static void CatchAlarm(int ignored)
 {
   tries += 1;
 }
@@ -95,12 +95,14 @@ static void CatchAlarm(int ignored) /* Handler for SIGALRM */
   \param bebin the start date
   \param end the end date
   \return 0 if OK or <0 if failed
+
+  \warning the year must be lesser than 2099 !
 */
 static int EuropeanSummerTime( const int year, time_t *begin, time_t *end)
 {  
   struct tm st;
   
-  /* l'algo n'est valable que jusqu'en 2099 !!! */
+  /* ready until 2099 ! */
   if(year > 2099) return -1;
 
   /* start of summer time */
@@ -133,11 +135,10 @@ static int EuropeanSummerTime( const int year, time_t *begin, time_t *end)
 int ntpdate(void)
 {
   int err=0;
+  int	i;			                             // misc var i
 
-  //char	*hostname="88.178.32.159";
   char  hostname[ktHOSTNAMELEN+1];
   int	portno = 123;		                     // NTP is port 123
-  int	i;			                             // misc var i
   unsigned char msg[NTP_MAXREQUEST_LEN];   // = { eNTP_V1,0,0,0,0,0,0,0,0};  // the packet we send
   unsigned long buf[MAXLEN];               // the buffer we get back
   unsigned msgLen;
@@ -149,25 +150,30 @@ int ntpdate(void)
   int	 s = -1;                             // socket
   time_t tmit = -1;                        // the time -- This is a time_t sort of
   
-  struct sigaction myAction;               // For setting signal handler
+  struct sigaction myAction;               // for setting signal handler
 
   // get hostname options
   strncpy( hostname, gAppOptions.m_host, sizeof(hostname));
   if( gAppOptions.m_verbose) {
     trace_write( gAppTrace, eINFO_MSG_TYPE,
-                 "Host: %s", hostname);
+                 "Try with host: %s", hostname);
   }
 
   /*
-   * open UDP socket;
+   * open UDP socket
    ***************************************************************************
    */
   proto = getprotobyname( "udp");
-  s = socket( PF_INET, SOCK_DGRAM, proto->p_proto);
-  if( s && gAppOptions.m_verbose ) {
-    trace_write( gAppTrace, eINFO_MSG_TYPE, "Socket [%d]",s);
+  if( (s = socket( PF_INET, SOCK_DGRAM, proto->p_proto)) < 0) {
+     trace_write( gAppTrace, eERROR_MSG_TYPE, "socket() failed");
+     goto BAIL;    
   }
-  
+  else {
+    if( s && gAppOptions.m_verbose ) {
+      trace_write( gAppTrace, eINFO_MSG_TYPE, "Socket number: %d",s);
+    }
+  }
+
   // get ip address
 
   memset( &server_addr, 0, sizeof( server_addr ));
@@ -181,15 +187,10 @@ int ntpdate(void)
     server_addr.sin_addr.s_addr = inet_addr(hostname);
   }
   else {
-    /*
-      unsigned long a = 0;
-      a = (unsigned long)((struct in_addr*)he->h_addr)->s_addr;
-    */
     memcpy( (char *) &server_addr.sin_addr, he->h_addr_list[0], he->h_length);
   }
   
-  //argv[1] );
-  //i   = inet_aton(hostname,&server_addr.sin_addr);
+  // port number
   server_addr.sin_port = htons(portno);
   trace_write( gAppTrace, eINFO_MSG_TYPE,
                "Try to connect to hostname: '%s' (%s)...",
@@ -238,15 +239,16 @@ int ntpdate(void)
   i = sendto( s, msg, msgLen, 0, (struct sockaddr *)&server_addr, sizeof(server_addr));
   if( i == -1) {
     err = errno;
+    trace_write( gAppTrace, eERROR_MSG_TYPE, "sendto() failed");
     if( gAppOptions.m_verbose) {
-      trace_write( gAppTrace, eERROR_MSG_TYPE, "sendto: [error %d]", err);
-      trace_write( gAppTrace, eERROR_MSG_TYPE, "sendto: %s", strerror(err));
+      trace_write( gAppTrace, eERROR_MSG_TYPE, "sendto(): [error %d]", err);
+      trace_write( gAppTrace, eERROR_MSG_TYPE, "sendto(): %s", strerror(err));
     }
     goto BAIL;
   }
   else {
     if( gAppOptions.m_verbose) {
-      trace_write( gAppTrace, eINFO_MSG_TYPE, "Connect to %s: OK", hostname);
+      trace_write( gAppTrace, eINFO_MSG_TYPE, "Connected to '%s'", hostname);
     }
   }
     
@@ -265,7 +267,7 @@ int ntpdate(void)
       if( tries < NTP_MAXREQUEST_TRIES) {     // incremented by signal handler
         
         if( gAppOptions.m_verbose) {
-          trace_write( gAppTrace, eINFO_MSG_TYPE, "timed out, %d more tries...", NTP_MAXREQUEST_TRIES - tries);
+          trace_write( gAppTrace, eINFO_MSG_TYPE, "Timed out, %d more tries...", NTP_MAXREQUEST_TRIES - tries);
           trace_flush( gAppTrace);
         }
         
@@ -292,7 +294,7 @@ int ntpdate(void)
   /* recvfrom() got something --  cancel the timeout */
   alarm(0);
   if(gAppOptions.m_verbose) {
-    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "Got response!");
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "Cool, I had an response!");
   }
   
   //We get 12 long words back in Network order
@@ -352,7 +354,7 @@ int ntpdate(void)
 
     err =  EuropeanSummerTime( ltime->tm_year + 1900, &begin, &end);
     if(err) {
-      trace_write( gAppTrace, eWARNING_MSG_TYPE, "EuropeanSummerTime: [error %d]", err);      
+      trace_write( gAppTrace, eWARNING_MSG_TYPE, "EuropeanSummerTime() failed: [error %d]", err);      
     }
     else {
       if( gAppOptions.m_verbose) {
@@ -390,7 +392,7 @@ int ntpdate(void)
    ***************************************************************************
    */
   if( gAppOptions.m_debug ) {
-	trace_write( gAppTrace, eWARNING_MSG_TYPE, "Debug on: no set time of day activated.");
+	trace_write( gAppTrace, eWARNING_MSG_TYPE, "DEBUG ON: no set time of day activated.");
   }
   else {
 	struct timeval new_timeval;
@@ -405,20 +407,23 @@ int ntpdate(void)
 #endif
   
 	if( err) {
-    trace_write(gAppTrace,  eERROR_MSG_TYPE, "Set time of day: KO");	
+    trace_write(gAppTrace,  eERROR_MSG_TYPE, "Set time of day failed !");	
     err = errno;
 	  if( gAppOptions.m_verbose) {
-      trace_write( gAppTrace, eERROR_MSG_TYPE, "settimeofday: [error %d]: %s",
+      trace_write( gAppTrace, eERROR_MSG_TYPE, "settimeofday() failed, [error %d]: %s",
                    err,
                    strerror(err));
 	  }
 	} 
   else {
-    trace_write(gAppTrace,  eINFO_MSG_TYPE, "Set time of day: OK");
+    trace_write(gAppTrace,  eINFO_MSG_TYPE, "Set time of day OK");
   }
   trace_flush(gAppTrace);
   }
   
 BAIL:
+  if( gAppOptions.m_verbose)
+    trace_write(gAppTrace,  eINFO_MSG_TYPE, "Close socket: %d", s);
+  close(s);
   return err;
 }

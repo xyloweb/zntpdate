@@ -1,7 +1,8 @@
-This is zntpdate for SCO and Linux
+This is zntpdate for SCO, Linux, Mac OS X
 
 Contents:
-	zntpdate	tool to update date/time with offset options
+	zntpdate tool to update date/time with offset options and
+  European Summer Time feature.
 
 Requires:
 	Working compiler, libc and socket lib.
@@ -15,4 +16,4 @@ Installation:
 	Then (as root) do "make install".
 
 Jean-Michel Marino
-29 Februray 2008
+3 Jully  2008

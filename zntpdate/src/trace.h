@@ -28,9 +28,11 @@ typedef enum TraceType {
 
 
 #define ktLOG_MSG_TYPE_MASK	0x00FF		/*<! message type mask          */
+/*! use this macro to retrieve log message type                       */
 #define LOG_MSG_TYPE(x) ( ktLOG_MSG_TYPE_MASK & (x) )
 
 #define ktLOG_MSG_OPT_MASK	0xFF00		/*<! option message mask        */
+/*! use this macro to retrieve log message options                    */
 #define LOG_MSG_OPTION(x) ( ktLOG_MSG_OPT_MASK & (x) )
 
 /*!
@@ -41,21 +43,21 @@ typedef enum TraceType {
   \sa gLogSignature
 */
 typedef enum LogMsgType {
-  eINFO_MSG_TYPE			= 0,    /*!< info message type                               */
-  eINFO_IN_MSG_TYPE,          /*!< info message associated with action send to NTP */
-  eINFO_OUT_MSG_TYPE,         /*!< info message associated with action get to NTP  */
-  eWARNING_MSG_TYPE,          /*!< warning message type                            */
-  eERROR_MSG_TYPE,            /*!< error message type                              */
+  eINFO_MSG_TYPE			= 0,        /*!< info message type                               */
+  eINFO_IN_MSG_TYPE,              /*!< info message associated with action send to NTP */
+  eINFO_OUT_MSG_TYPE,             /*!< info message associated with action get to NTP  */
+  eWARNING_MSG_TYPE,              /*!< warning message type                            */
+  eERROR_MSG_TYPE,                /*!< error message type                              */
   
-  // jusqu'à          = 0xFF
+  // until            = 0xFF
   
-  // complément du type de message
+  // Option for the type of message
   eWITH_TIMESTAMP     = 1 << 8,   /*!< to add timestamp to the message             */
-  // suivant		  = 1 << 9,
-  // etc              = 1 << 10 jusqu'à 15
+  // next             = 1 << 9,
+  // etc              = 1 << 10 until 15
 }LogMsgType;
 
-/* must be completed at the same time that LogMsgType enum */
+/*! must be completed at the same time that LogMsgType enum */
 static const char *gLogSignature[ktLOGSIGNMAXLEN+1] = {
 	"####",
 	"<<<<",
