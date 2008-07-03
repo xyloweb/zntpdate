@@ -1,5 +1,7 @@
+v0.4.7 - 3 Jully 2008
+	Fixed cosmetic bug under SCO with ctime() function don't work properly!
 
-v0.4.6 - Jully 2008
+v0.4.6 - 2 Jully 2008
 	Update log functions,
 	Added European Summer Time feature to automatically add 1 hour in summer time,
 	Added a timeout when I try to receive a response from the server NTP,

@@ -88,6 +88,22 @@ static void CatchAlarm(int ignored)
 
 
 /*!
+  \brief like ctime but without a bug under SCO !
+  ******************************************************************
+
+  \param time the time to convert into string
+  \return a C string containing the date and time information in a
+  human-readable format.
+*/
+static char *zctime( const time_t *time)
+{
+  struct tm *ptm = NULL;
+  ptm = gmtime(time);
+  return ( ptm ? asctime(ptm) : "????" );  
+}
+
+
+/*!
   \brief  Calculates start date and end of the period of summer time.
    ******************************************************************
 
@@ -123,6 +139,7 @@ static int EuropeanSummerTime( const int year, time_t *begin, time_t *end)
 
   return 0;
 }
+
 
 /*!
   \brief main ntpdate function
@@ -328,14 +345,18 @@ int ntpdate(void)
   
   tmit -= 2208988800U;	
   if( gAppOptions.m_verbose) {
-    trace_write( gAppTrace, eINFO_MSG_TYPE, "UNIX time: %ld", tmit);
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "UNIX time: %ld", tmit);
   }
   
   /* use unix library function to show me the local time (it takes care
    * of timezone issues for both north and south of the equator and places
    * that do Summer time/ Daylight savings time.
    */
-  trace_write( gAppTrace,  eINFO_MSG_TYPE, "Time: %s", ctime(&tmit));
+  /*
+    trace_write( gAppTrace,  eINFO_MSG_TYPE, "Time: %s", ctime(&tmit));
+    !!! ctime don't work properly so I use gmtime() and asctime()
+  */    
+  trace_write( gAppTrace,  eINFO_IN_MSG_TYPE, "Time (GMT0): %s", zctime(&tmit));
 
   /*  
    * add offset before set time of day
@@ -377,14 +398,11 @@ int ntpdate(void)
   }
   
   /*
-   * statistics
+   * calculate new time and delta
    ***************************************************************************
    */
-  trace_write( gAppTrace,  eINFO_MSG_TYPE, "Time: %s", ctime(&tmit));
   i = time(0);
-  /*
-   * and compare time delta
-   */  
+  trace_write( gAppTrace,  eINFO_MSG_TYPE, "Time (new) : %s", zctime(&tmit));
   trace_write( gAppTrace,  eINFO_MSG_TYPE, "System time is %d seconds off",i-tmit);
 
   /*
