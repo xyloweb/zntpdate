@@ -13,8 +13,9 @@
 #define NTPDATE_H_
 
 /*
- * prototypage
- */
+  Function prototype
+  ******************************************************************
+  */
 int ntpdate(void);
 
 #endif /* NTPDATE_H_ */

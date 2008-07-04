@@ -72,7 +72,7 @@
 
 /* -- global variables -- */
 
-const char   *gAppVersion = "zntpdate v0.4.7";  /*!< Application version.   */
+const char   *gAppVersion = "zntpdate v0.4.8";  /*!< Application version.   */
 
 options_t    gAppOptions;                       /*!< Application options.   */
 trace_desc_t *gAppTrace;                        /*!< App log structure      */

@@ -27,11 +27,11 @@ typedef enum TraceType {
 }TraceType;
 
 
-#define ktLOG_MSG_TYPE_MASK	0x00FF		/*<! message type mask          */
+#define ktLOG_MSG_TYPE_MASK	0x00FF		/*<! message type mask        */
 /*! use this macro to retrieve log message type                       */
 #define LOG_MSG_TYPE(x) ( ktLOG_MSG_TYPE_MASK & (x) )
 
-#define ktLOG_MSG_OPT_MASK	0xFF00		/*<! option message mask        */
+#define ktLOG_MSG_OPT_MASK	0xFF00		/*<! option message mask      */
 /*! use this macro to retrieve log message options                    */
 #define LOG_MSG_OPTION(x) ( ktLOG_MSG_OPT_MASK & (x) )
 
@@ -43,7 +43,7 @@ typedef enum TraceType {
   \sa gLogSignature
 */
 typedef enum LogMsgType {
-  eINFO_MSG_TYPE			= 0,        /*!< info message type                               */
+  eINFO_MSG_TYPE      = 0,        /*!< info message type                               */
   eINFO_IN_MSG_TYPE,              /*!< info message associated with action send to NTP */
   eINFO_OUT_MSG_TYPE,             /*!< info message associated with action get to NTP  */
   eWARNING_MSG_TYPE,              /*!< warning message type                            */
@@ -52,7 +52,7 @@ typedef enum LogMsgType {
   // until            = 0xFF
   
   // Option for the type of message
-  eWITH_TIMESTAMP     = 1 << 8,   /*!< to add timestamp to the message             */
+  eWITH_TIMESTAMP     = 1 << 8,   /*!< to add timestamp to the message                 */
   // next             = 1 << 9,
   // etc              = 1 << 10 until 15
 }LogMsgType;
@@ -74,8 +74,8 @@ static const char *gLogSignature[ktLOGSIGNMAXLEN+1] = {
 
 */
 typedef struct trace_desc_t {
-  TraceType m_type;                  /*!< type of trace     */
-  FILE      *m_file;                 /*!< file to put trace */
+  TraceType m_type;               /*!< type of trace      */
+  FILE      *m_file;              /*!< file to put trace  */
 
 }trace_desc_t;
 
