@@ -1,3 +1,7 @@
+v0.4.8 - 4 Jully 2008
+        If offset time is zero no settimeofday(),
+        Check EST before add offset time !
+
 v0.4.7 - 3 Jully 2008
 	Fixed cosmetic bug under SCO with ctime() function don't work properly!
 
