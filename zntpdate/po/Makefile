@@ -11,7 +11,7 @@
 # Origin: gettext-0.16
 
 PACKAGE = zntpdate
-VERSION = 0.4.8
+VERSION = 0.4.9
 PACKAGE_BUGREPORT = public.jmm@free.fr
 
 SHELL = /bin/sh

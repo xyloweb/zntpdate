@@ -158,7 +158,7 @@ msgstr "Nouveau temps: %s"
 #: src/ntpdate.c:415
 #, c-format
 msgid "System time is %d seconds off"
-msgstr "L'heure système est décalé de %d seconde(s)"
+msgstr "L'heure système est décalée de %d seconde(s)"
 
 #: src/ntpdate.c:422
 msgid "Set time of day is not necessary"
@@ -189,7 +189,7 @@ msgstr "Fermeture de la socket: %d"
 #: src/trace.c:94
 #, c-format
 msgid "%s trace init failed"
-msgstr "%s échec de l'initialisation du module de trace"
+msgstr "%s échec de l'initialisation du journal"
 
 #: src/trace.c:115 src/trace.c:156 src/trace.c:208
 #, c-format
