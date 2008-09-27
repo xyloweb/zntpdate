@@ -2,10 +2,14 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT(zntpdate, 0.4.8, public.jmm@free.fr)
+AC_INIT(zntpdate, 0.4.9, public.jmm@free.fr)
 AM_INIT_AUTOMAKE([ -Wall -Werror foreign])
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADER([config.h])
+
+# Use gettext for localization
+AM_GNU_GETTEXT([external])
+ALL_LINGUAS=fr
 
 # Checks for programs.
 AC_PROG_CC
@@ -38,6 +42,7 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([gethostbyname inet_ntoa memset socket strchr strerror])
 
 AC_CONFIG_FILES([
+  po/Makefile.in
 	Makefile
 	src/Makefile
 	])

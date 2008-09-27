@@ -18,7 +18,9 @@ main.o main.o: main.c ../config.h /usr/include/stdio.h \
   /usr/include/asm-i486/errno.h /usr/include/asm-generic/errno.h \
   /usr/include/asm-generic/errno-base.h /usr/include/string.h \
   /usr/include/bits/string.h /usr/include/bits/string2.h \
-  /usr/include/ctype.h main.h ntpdate.h trace.h
+  /usr/include/ctype.h gettext.h /usr/include/libintl.h \
+  /usr/include/locale.h /usr/include/bits/locale.h main.h ntpdate.h \
+  trace.h
 
 ../config.h:
 
@@ -103,6 +105,14 @@ main.o main.o: main.c ../config.h /usr/include/stdio.h \
 /usr/include/bits/string2.h:
 
 /usr/include/ctype.h:
+
+gettext.h:
+
+/usr/include/libintl.h:
+
+/usr/include/locale.h:
+
+/usr/include/bits/locale.h:
 
 main.h:
 

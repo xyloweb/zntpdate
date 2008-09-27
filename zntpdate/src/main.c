@@ -65,14 +65,17 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "gettext.h" /* for gettext functions */
+#define _(String) gettext (String)
+#define N_(String) String
+
 #include "main.h"
 #include "ntpdate.h"
 #include "trace.h"
 
-
 /* -- global variables -- */
 
-const char   *gAppVersion = "zntpdate v0.4.8";  /*!< Application version.   */
+const char   *gAppVersion = "zntpdate v0.4.9";  /*!< Application version.   */
 
 options_t    gAppOptions;                       /*!< Application options.   */
 trace_desc_t *gAppTrace;                        /*!< App log structure      */
@@ -93,6 +96,13 @@ int main(int argc, char **argv)
 {
   int err = 0;
   TraceType tt;
+
+  /* -- for localization --*/
+#ifdef ENABLE_NLS
+  setlocale( LC_ALL, "");
+  bindtextdomain( PACKAGE, PACKAGE_LOCAL_DIR);
+  textdomain( PACKAGE);
+#endif
 
   /* -- set default options and parse arguments -- */
   if (argc <= 1) usage();
@@ -144,7 +154,7 @@ static int parse_cmd_line(int argc, char **argv)
       if (p[1] == '-') {
         p += 2;
         if (--argc <= 0) {
-          fprintf( stderr, "%s No argument for\n", gLogSignature[eERROR_MSG_TYPE]);
+          fprintf( stderr, _("%s No argument for\n"), gLogSignature[eERROR_MSG_TYPE]);
           err = -1; goto DONE;
         }
         argv++;
@@ -169,7 +179,7 @@ static int parse_cmd_line(int argc, char **argv)
               aaa = *++argv;
               //if (--argc <= 0 || *aaa == '-') {
               if( --argc <= 0 ) {
-                fprintf(stderr, "%s Missing parameter after flag -%c\n", gLogSignature[eERROR_MSG_TYPE], c);
+                fprintf(stderr, _("%s Missing parameter after flag -%c\n"), gLogSignature[eERROR_MSG_TYPE], c);
                 err = -2; goto DONE;
               }
             } else {
@@ -180,7 +190,7 @@ static int parse_cmd_line(int argc, char **argv)
             if( strchr("O", c) ) {
               for (j = 0; j < strlen(aaa); j++) {
                 if (!strchr("+-0123456789.", aaa[j])) {
-                  fprintf(stderr, "%s Invalid parameter <%s> for flag -%c\n", gLogSignature[eERROR_MSG_TYPE], aaa, c);
+                  fprintf(stderr, _("%s Invalid parameter <%s> for flag -%c\n"), gLogSignature[eERROR_MSG_TYPE], aaa, c);
                   err = -3; goto DONE;
                 }
               }
@@ -189,7 +199,7 @@ static int parse_cmd_line(int argc, char **argv)
             if( strchr("o", c)) {
               for (j = 0; j < strlen(aaa); j++) {
                 if (!strchr("12", aaa[j])) {
-                  fprintf(stderr, "%s Invalid parameter <%s> for flag -%c\n", gLogSignature[eERROR_MSG_TYPE], aaa, c);
+                  fprintf(stderr, _("%s Invalid parameter <%s> for flag -%c\n"), gLogSignature[eERROR_MSG_TYPE], aaa, c);
                   err = -4; goto DONE;
                 }
               }
@@ -207,7 +217,7 @@ static int parse_cmd_line(int argc, char **argv)
           } break;
           
         default:
-          fprintf(stderr, "%s Unknown flag: -%c\n", gLogSignature[eERROR_MSG_TYPE], c);
+          fprintf(stderr, _("%s Unknown flag: -%c\n"), gLogSignature[eERROR_MSG_TYPE], c);
           err = -5; goto DONE;
           break;
           
@@ -219,7 +229,7 @@ static int parse_cmd_line(int argc, char **argv)
     
     
     if( strlen(p) == 0) {
-      fprintf(stderr, "%s IP address must be not null!\n", gLogSignature[eERROR_MSG_TYPE]);
+      fprintf(stderr, _("%s IP address must be not null!\n"), gLogSignature[eERROR_MSG_TYPE]);
       err = -6; goto DONE;
     }
     else { 
@@ -231,7 +241,7 @@ static int parse_cmd_line(int argc, char **argv)
   } // while  --argc > 0 
   
   if( strlen(gAppOptions.m_host) == 0) {
-    fprintf(stderr, "%s No IP address specified\n", gLogSignature[eERROR_MSG_TYPE]);
+    fprintf(stderr, _("%s No IP address specified\n"), gLogSignature[eERROR_MSG_TYPE]);
     err = -7; goto DONE;
   }
   
@@ -249,41 +259,41 @@ static void usage(void)
 {
   write_version();
   fprintf( stdout,
-           "This tool is like ntpdate but I added a feature to make an offset before set system date\n"
-           "and time. It is particulary interesting when your system is configured without TIMEZONE\n"
-           "and when you could not set nothing else but GMT0.\n"
-           "If you are localized into an European Summer Time zone don't forget to set -E option so\n"
-           "than one hour will be automatically added in summer.\n"
-           "\n"
-           "Usage: zndtpdate [options] host\n"
-           "where:\n"
-           " host         hostname or IP address of NTP server\n"
-           " options:\n"
-           "  .configuration:\n"
-           "     -o v     Specify the NTP version for outgoint packets as the integer version,  which\n"
-           "              can  be 1 or 2. The default is 3. This allows ntpdate to be used with older\n"
-           "              NTP versions.\n"
-           "     -O[+-]n  Offset to add before set date, indicate +/- value.\n"
-           "     -E       Enable automatic correction for the summer time.\n"
-           "  .verbose/debug:\n"
-           "     -d       Enable the debugging mode, in which zntpdate will go\n"
-           "              through all the steps, but do not adjust the local clock.\n"
-           "     -s       Divert logging output from the standard output (default) to the system sys-\n"
-           "              log facility. This is designed primarily for convenience of cron scripts.\n"
-           "     -v       Verbose mode. Information useful for\n"
-           "              general debugging will also be printed.\n"
-           "  .help/version:\n"
-           "     -h       Show this command summary.\n"
-           "     -V       Show program version.\n"
-           "\n"
-           "Examples:\n"
-           "     How to add automatically 1 hour in winter and 2 hours in summer time?\n"
-           "              zntpdate -Ev -O+3600 pool.ntp.org\n"
-           "     How to test znptdate without change date and time of your system?\n"
-           "              zntpdate -dv pool.ntp.org\n"
-          );
+             "This tool is like ntpdate but I added a feature to make an offset before set system date\n"
+             "and time. It is particulary interesting when your system is configured without TIMEZONE\n"
+             "and when you could not set nothing else but GMT0.\n"
+             "If you are localized into an European Summer Time zone don't forget to set -E option so\n"
+             "than one hour will be automatically added in summer.\n"
+             "\n"
+             "Usage: zndtpdate [options] host\n"
+             "where:\n"
+             " host         hostname or IP address of NTP server\n"
+             " options:\n"
+             "  .configuration:\n"
+             "     -o v     Specify the NTP version for outgoint packets as the integer version,  which\n"
+             "              can  be 1 or 2. The default is 3. This allows ntpdate to be used with older\n"
+             "              NTP versions.\n"
+             "     -O[+-]n  Offset to add before set date, indicate +/- value.\n"
+             "     -E       Enable automatic correction for the summer time.\n"
+             "  .verbose/debug:\n"
+             "     -d       Enable the debugging mode, in which zntpdate will go\n"
+             "              through all the steps, but do not adjust the local clock.\n"
+             "     -s       Divert logging output from the standard output (default) to the system sys-\n"
+             "              log facility. This is designed primarily for convenience of cron scripts.\n"
+             "     -v       Verbose mode. Information useful for\n"
+             "              general debugging will also be printed.\n"
+             "  .help/version:\n"
+             "     -h       Show this command summary.\n"
+             "     -V       Show program version.\n"
+             "\n"
+             "Examples:\n"
+             "     How to add automatically 1 hour in winter and 2 hours in summer time?\n"
+             "              zntpdate -Ev -O+3600 pool.ntp.org\n"
+             "     How to test znptdate without change date and time of your system?\n"
+             "              zntpdate -dv pool.ntp.org\n"
+           );
   exit(0);
-}
+ }
 
 /**
  * \brief write application version and copyright
@@ -293,5 +303,5 @@ static void usage(void)
 static void write_version(void)
 {
   fprintf(stdout, "%s\n", gAppVersion);
-  fprintf(stdout, "Written by Jean-Michel Marino (public.jmm@free.fr)\n");
+  fprintf(stdout, _("Written by Jean-Michel Marino (public.jmm@free.fr)\n"));
 }

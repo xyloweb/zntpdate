@@ -38,14 +38,19 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#include <errno.h>                 // for perror
-#include <sys/select.h>            // for timeval struct
-#include <time.h>                  // for mktime and struct tm
-#include <signal.h>                // for sigaction()
+#include <errno.h>        /* for perror                */
+#include <sys/select.h>   /* for timeval struct        */
+#include <time.h>         /* for mktime and struct tm  */
+#include <signal.h>       /* for sigaction()           */
+
+#include "gettext.h"      /* for gettext functions     */
+#define _(String) gettext (String)
+#define N_(String) String
 
 #include "main.h"
 #include "trace.h"
 
+/* -- other defines --*/
 #define MAXLEN               1024  /*!< check our buffers                       */
 #define NTPMODETYPE             3  /*!< NTP mode type client                    */
 #define SUMMERTIMEMONTHBEGIN    3  /*!< European Summer Time begin at March     */
@@ -175,7 +180,7 @@ int ntpdate(void)
   strncpy( hostname, gAppOptions.m_host, sizeof(hostname));
   if( gAppOptions.m_verbose) {
     trace_write( gAppTrace, eINFO_MSG_TYPE,
-                 "Try NTP with host: %s", hostname);
+                 _("Try NTP with host: %s"), hostname);
   }
   
   /*
@@ -184,22 +189,22 @@ int ntpdate(void)
    */
   proto = getprotobyname( "udp");
   if( (s = socket( PF_INET, SOCK_DGRAM, proto->p_proto)) < 0) {
-     trace_write( gAppTrace, eERROR_MSG_TYPE, "socket() failed");
-     goto BAIL;    
+    trace_write( gAppTrace, eERROR_MSG_TYPE, _("socket() failed"));
+    goto BAIL;    
   }
   else {
     if( s && gAppOptions.m_verbose ) {
-      trace_write( gAppTrace, eINFO_MSG_TYPE, "Open socket: %d",s);
+      trace_write( gAppTrace, eINFO_MSG_TYPE, _("Open socket: %d"),s);
     }
   }
-
+  
   /*
    * get ip address and try get host by name
    ***************************************************************************
    */
   memset( &server_addr, 0, sizeof( server_addr ));
   server_addr.sin_family=AF_INET;
-
+  
   // try get host by name
   he = gethostbyname( hostname);
   if( !he ||
@@ -217,7 +222,7 @@ int ntpdate(void)
    */
   server_addr.sin_port = htons(portno);
   trace_write( gAppTrace, eINFO_MSG_TYPE,
-               "Try to connect to hostname: '%s' (%s)...",
+               _("Try to connect to hostname: '%s' (%s)..."),
                hostname,
                inet_ntoa( server_addr.sin_addr));
   trace_flush( gAppTrace);
@@ -237,7 +242,7 @@ int ntpdate(void)
   msg[0] += NTPMODETYPE;
   
   if( gAppOptions.m_verbose) {
-    trace_write( gAppTrace, eINFO_MSG_TYPE, "NTP version: %d", gAppOptions.m_version);
+    trace_write( gAppTrace, eINFO_MSG_TYPE, _("NTP version: %d"), gAppOptions.m_version);
   }
   
   /*
@@ -246,13 +251,13 @@ int ntpdate(void)
    */
   myAction.sa_handler = CatchAlarm;
   if (sigfillset(&myAction.sa_mask) < 0) {  /* block everything in handler */
-    trace_write( gAppTrace, eERROR_MSG_TYPE, "sigfillset() failed");
+    trace_write( gAppTrace, eERROR_MSG_TYPE, _("sigfillset() failed"));
     goto BAIL;
   }
   myAction.sa_flags = 0;
   
   if (sigaction(SIGALRM, &myAction, 0) < 0) {
-     trace_write( gAppTrace, eERROR_MSG_TYPE, "sigaction() failed for SIGALRM");
+    trace_write( gAppTrace, eERROR_MSG_TYPE, _("sigaction() failed for SIGALRM"));
      goto BAIL;
   }
 
@@ -264,16 +269,16 @@ int ntpdate(void)
   i = sendto( s, msg, msgLen, 0, (struct sockaddr *)&server_addr, sizeof(server_addr));
   if( i == -1) {
     err = errno;
-    trace_write( gAppTrace, eERROR_MSG_TYPE, "sendto() failed");
+    trace_write( gAppTrace, eERROR_MSG_TYPE, _("sendto() failed"));
     if( gAppOptions.m_verbose) {
-      trace_write( gAppTrace, eERROR_MSG_TYPE, "sendto(): [error %d]", err);
+      trace_write( gAppTrace, eERROR_MSG_TYPE, _("sendto(): [error %d]"), err);
       trace_write( gAppTrace, eERROR_MSG_TYPE, "sendto(): %s", strerror(err));
     }
     goto BAIL;
   }
   else {
     if( gAppOptions.m_verbose) {
-      trace_write( gAppTrace, eINFO_MSG_TYPE, "Connected to '%s'", hostname);
+      trace_write( gAppTrace, eINFO_MSG_TYPE, _("Connected to '%s'"), hostname);
     }
   }
     
@@ -282,7 +287,7 @@ int ntpdate(void)
    ***************************************************************************
    */
   if( gAppOptions.m_verbose) {
-    trace_write( gAppTrace, eINFO_MSG_TYPE, "Attempt receive with timeout %ds", TIMEOUT_SECS);
+    trace_write( gAppTrace, eINFO_MSG_TYPE, _("Attempt receive with timeout %ds"), TIMEOUT_SECS);
     trace_flush( gAppTrace);
   }
 
@@ -292,32 +297,32 @@ int ntpdate(void)
       if( tries < NTP_MAXREQUEST_TRIES) {     // incremented by signal handler
         
         if( gAppOptions.m_verbose) {
-          trace_write( gAppTrace, eINFO_MSG_TYPE, "Timed out, %d more tries...", NTP_MAXREQUEST_TRIES - tries);
+          trace_write( gAppTrace, eINFO_MSG_TYPE, _("Timed out, %d more tries..."), NTP_MAXREQUEST_TRIES - tries);
           trace_flush( gAppTrace);
         }
         
         // trie to send NTP request
         if( sendto( s, msg, msgLen, 0, (struct sockaddr *)&server_addr,
                     sizeof(server_addr)) != msgLen) {
-          trace_write( gAppTrace, eERROR_MSG_TYPE, "sendto() failed");
+          trace_write( gAppTrace, eERROR_MSG_TYPE, _("sendto() failed"));
         }
         
         alarm( TIMEOUT_SECS);
       } 
       else {
-        trace_write( gAppTrace, eERROR_MSG_TYPE, "No Response, %d tries", NTP_MAXREQUEST_TRIES);
+        trace_write( gAppTrace, eERROR_MSG_TYPE, _("No Response, %d tries"), NTP_MAXREQUEST_TRIES);
         goto BAIL;
       }
     } 
     else {
-      trace_write( gAppTrace, eERROR_MSG_TYPE, "recvfrom() failed");
+      trace_write( gAppTrace, eERROR_MSG_TYPE, _("recvfrom() failed"));
       goto BAIL;
     }
   }
   /* recvfrom() got something --  cancel the timeout */
   alarm(0);
   if(gAppOptions.m_verbose) {
-    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "Cool, I had an response!");
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, _("Cool, I had an response!"));
   }
   
   /*
@@ -353,13 +358,13 @@ int ntpdate(void)
   
   tmit -= 2208988800U;	
   if( gAppOptions.m_verbose) {
-    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "UNIX time: %ld", tmit);
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, _("UNIX time: %ld"), tmit);
   } 
   /* use unix library function to show me the local time (it takes care
    * of timezone issues for both north and south of the equator and places
    * that do Summer time/ Daylight savings time.
    */  
-  trace_write( gAppTrace,  eINFO_IN_MSG_TYPE, "Time (GMT0): %s", zctime(&tmit));
+  trace_write( gAppTrace,  eINFO_IN_MSG_TYPE, _("Time (GMT0): %s"), zctime(&tmit));
 
   /*
    * add European Summer Time adjust if option -E is enabled
@@ -372,7 +377,7 @@ int ntpdate(void)
 
     err =  EuropeanSummerTime( ltime->tm_year + 1900, &begin, &end);
     if(err) {
-      trace_write( gAppTrace, eWARNING_MSG_TYPE, "EuropeanSummerTime() failed: [error %d]", err);      
+      trace_write( gAppTrace, eWARNING_MSG_TYPE, _("EuropeanSummerTime() failed: [error %d]"), err);      
     }
     else {
       if( gAppOptions.m_verbose) {
@@ -380,15 +385,15 @@ int ntpdate(void)
         
         tmp = ctime(&begin);
         //tmp[strlen(tmp)-1] = '\0';
-        trace_write( gAppTrace, eINFO_MSG_TYPE, "European Summer Time start at: %s", tmp);
+        trace_write( gAppTrace, eINFO_MSG_TYPE, _("European Summer Time start at: %s"), tmp);
         
         tmp = ctime(&end);
         //tmp[strlen(tmp)-1] = '\0';
-        trace_write( gAppTrace, eINFO_MSG_TYPE, "European Summer Time end at  : %s", tmp);
+        trace_write( gAppTrace, eINFO_MSG_TYPE, _("European Summer Time end at  : %s"), tmp);
       }
       
       if( tmit >= begin && tmit < end) {
-        trace_write( gAppTrace, eINFO_MSG_TYPE, "EST is activated"); 
+        trace_write( gAppTrace, eINFO_MSG_TYPE, _("EST is activated")); 
         tmit += 3600;
       }
     }
@@ -406,48 +411,48 @@ int ntpdate(void)
    ***************************************************************************
    */
   i = time(0);
-  trace_write( gAppTrace,  eINFO_MSG_TYPE, "Time (new) : %s", zctime(&tmit));
-  trace_write( gAppTrace,  eINFO_MSG_TYPE, "System time is %d seconds off",i-tmit);
+  trace_write( gAppTrace,  eINFO_MSG_TYPE, _("Time (new) : %s"), zctime(&tmit));
+  trace_write( gAppTrace,  eINFO_MSG_TYPE, _("System time is %d seconds off"),i-tmit);
 
   /*
    * set time of day if it's necessary
    ***************************************************************************
    */
   if( 0 == i-tmit) {
-    trace_write(gAppTrace,  eINFO_MSG_TYPE, "Set time of day is not necessary");
+    trace_write(gAppTrace,  eINFO_MSG_TYPE, _("Set time of day is not necessary"));
   }
   else if( gAppOptions.m_debug ) {
-	trace_write( gAppTrace, eWARNING_MSG_TYPE, "DEBUG ON: no set time of day activated.");
+    trace_write( gAppTrace, eWARNING_MSG_TYPE, _("DEBUG ON: no set time of day activated."));
   }
   else {
-	struct timeval new_timeval;
+    struct timeval new_timeval;
     
-	memset(&new_timeval, 0, sizeof(new_timeval));
-	new_timeval.tv_sec = tmit;
+    memset(&new_timeval, 0, sizeof(new_timeval));
+    new_timeval.tv_sec = tmit;
     
 #ifdef SYSV_TIMEOFDAY 
-	err = settimeofday( &new_timeval);
+    err = settimeofday( &new_timeval);
 #else
-	err = settimeofday( &new_timeval, 0);
+    err = settimeofday( &new_timeval, 0);
 #endif   
-	if( err) {
-      trace_write(gAppTrace,  eERROR_MSG_TYPE, "Set time of day failed !");	
+    if( err) {
+      trace_write(gAppTrace,  eERROR_MSG_TYPE, _("Set time of day failed !"));	
       err = errno;
-	  if( gAppOptions.m_verbose) {
-        trace_write( gAppTrace, eERROR_MSG_TYPE, "settimeofday() failed, [error %d]: %s",
+      if( gAppOptions.m_verbose) {
+        trace_write( gAppTrace, eERROR_MSG_TYPE, _("settimeofday() failed, [error %d]: %s"),
                      err,
                      strerror(err));
-	  }
-	} 
+      }
+    } 
     else {
-      trace_write(gAppTrace,  eINFO_MSG_TYPE, "Set time of day OK");
+      trace_write(gAppTrace,  eINFO_MSG_TYPE, _("Set time of day OK"));
     }
     trace_flush(gAppTrace);
   }
   
 BAIL:
   if( gAppOptions.m_verbose)
-    trace_write(gAppTrace,  eINFO_MSG_TYPE, "Close socket: %d", s);
+    trace_write(gAppTrace,  eINFO_MSG_TYPE, _("Close socket: %d"), s);
   close(s);
   return err;
 }

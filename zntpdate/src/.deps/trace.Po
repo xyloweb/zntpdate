@@ -16,7 +16,8 @@ trace.o trace.o: trace.c ../config.h /usr/include/stdlib.h \
   /usr/include/bits/stdio.h /usr/include/string.h \
   /usr/include/bits/string.h /usr/include/bits/string2.h \
   /usr/include/assert.h /usr/include/syslog.h /usr/include/sys/syslog.h \
-  /usr/include/bits/syslog-path.h trace.h
+  /usr/include/bits/syslog-path.h gettext.h /usr/include/libintl.h \
+  /usr/include/locale.h /usr/include/bits/locale.h trace.h
 
 ../config.h:
 
@@ -93,5 +94,13 @@ trace.o trace.o: trace.c ../config.h /usr/include/stdlib.h \
 /usr/include/sys/syslog.h:
 
 /usr/include/bits/syslog-path.h:
+
+gettext.h:
+
+/usr/include/libintl.h:
+
+/usr/include/locale.h:
+
+/usr/include/bits/locale.h:
 
 trace.h:

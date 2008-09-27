@@ -19,7 +19,11 @@
 #include <stdarg.h>
 #include <assert.h>
 #include <syslog.h>
-#include <time.h>   /* for function create_timestamp_msg */
+#include <time.h>    /* for function create_timestamp_msg */
+
+#include "gettext.h" /* for gettext functions             */
+#define _(String) gettext (String)
+#define N_(String) String
 
 #include "trace.h"
 
@@ -85,8 +89,11 @@ trace_desc_t *trace_init( TraceType tt)
   char *tmp = NULL;
   
   id = (trace_desc_t *)calloc( (size_t)1, sizeof(id));
-  if(NULL == id) fprintf(stderr, "\n%s trace init failed", gLogSignature[eERROR_MSG_TYPE]);
-  
+  if(NULL == id) {
+    fprintf(stderr, "\n");
+    fprintf(stderr, _("%s trace init failed"), gLogSignature[eERROR_MSG_TYPE]);
+  }
+
   id->m_type = tt;
   switch(tt) {
   case eSyslog:
@@ -104,7 +111,8 @@ trace_desc_t *trace_init( TraceType tt)
     } break;
 	
   default:
-    { fprintf(stderr, "\n%s log type not implemented.", gLogSignature[eERROR_MSG_TYPE]);
+    { fprintf(stderr, "\n");
+      fprintf(stderr, _("%s log type not implemented."), gLogSignature[eERROR_MSG_TYPE]);
     } break;
   }
   
@@ -144,7 +152,8 @@ void trace_close( trace_desc_t **logID)
     } break;
 	
   default:
-    { fprintf(stderr, "\n%s log type not implemented.", gLogSignature[eERROR_MSG_TYPE]);
+    { fprintf(stderr, "\n");
+      fprintf(stderr, _("%s log type not implemented."), gLogSignature[eERROR_MSG_TYPE]);
     } break;
   }
   
@@ -195,7 +204,8 @@ void trace_write( trace_desc_t *logID, LogMsgType msgType, const char *format, .
     } break;   
 	
   default:
-    {  fprintf(stderr, "\n%s log type not implemented.", gLogSignature[eERROR_MSG_TYPE] );
+    { fprintf(stderr, "\n");
+      fprintf(stderr, _("%s log type not implemented."), gLogSignature[eERROR_MSG_TYPE] );
     } break;
   }
   

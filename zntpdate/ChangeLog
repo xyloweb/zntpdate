@@ -1,3 +1,10 @@
+2008-09-26  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (SUBDIRS): Add po.
+	(ACLOCAL_AMFLAGS): New variable.
+	(EXTRA_DIST): New variable.
+	* configure.ac (AC_CONFIG_FILES): Add po/Makefile.in.
+
 v0.4.8 - 4 Jully 2008
         If offset time is zero no settimeofday(),
         Check EST before add offset time !

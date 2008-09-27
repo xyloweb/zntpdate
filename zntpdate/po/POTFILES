@@ -1,0 +1,3 @@
+     ../src/main.c \
+     ../src/ntpdate.c \
+     ../src/trace.c

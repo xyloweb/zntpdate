@@ -1,0 +1,197 @@
+#
+# Localization for zntpdate project.
+#
+# Copyright (C) 2008 Jean-Michel Marino.
+# This file is distributed under the same license as the zntpdate package.
+# Jean-Michel Marino <public.jmm@free.fr>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: zntpdate 0.4.8\n"
+"Report-Msgid-Bugs-To: public.jmm@free.fr\n"
+"POT-Creation-Date: 2008-09-27 21:50+0200\n"
+"PO-Revision-Date: 2008-09-26 20:57+CET\n"
+"Last-Translator: Jean-Michel Marino <public.jmm@free.fr>\n"
+"Language-Team: Traducteur France <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/main.c:157
+#, c-format
+msgid "%s No argument for\n"
+msgstr "%s Pas d'argument pour\n"
+
+#: src/main.c:182
+#, c-format
+msgid "%s Missing parameter after flag -%c\n"
+msgstr "%s paramètre absent après l'option -%c\n"
+
+#: src/main.c:193 src/main.c:202
+#, c-format
+msgid "%s Invalid parameter <%s> for flag -%c\n"
+msgstr "%s Paramètre invalide <%s> pour l'option -%c\n"
+
+#: src/main.c:220
+#, c-format
+msgid "%s Unknown flag: -%c\n"
+msgstr "%s Option inconnue: -%c\n"
+
+#: src/main.c:232
+#, c-format
+msgid "%s IP address must be not null!\n"
+msgstr "%s L'adresse IP ne peut pas être nulle !\n"
+
+#: src/main.c:244
+#, c-format
+msgid "%s No IP address specified\n"
+msgstr "%s L'adresse IP n'a pas été spécifiée\n"
+
+#: src/main.c:306
+#, c-format
+msgid "Written by Jean-Michel Marino (public.jmm@free.fr)\n"
+msgstr "Ecrit par Jean-Michel Marino (public.jmm@free.fr)\n"
+
+#: src/ntpdate.c:183
+#, c-format
+msgid "Try NTP with host: %s"
+msgstr "Conexion NTP avec le serveur: %s"
+
+#: src/ntpdate.c:192
+msgid "socket() failed"
+msgstr "Echec de la fonction socket()"
+
+#: src/ntpdate.c:197
+#, c-format
+msgid "Open socket: %d"
+msgstr "Ouverture du socket: %d"
+
+#: src/ntpdate.c:225
+#, c-format
+msgid "Try to connect to hostname: '%s' (%s)..."
+msgstr "Tentative de connexion à: '%s' (%s)..."
+
+#: src/ntpdate.c:245
+#, c-format
+msgid "NTP version: %d"
+msgstr "Version NTP: %d"
+
+#: src/ntpdate.c:254
+msgid "sigfillset() failed"
+msgstr "Echec de la fonction sigfillset()"
+
+#: src/ntpdate.c:260
+msgid "sigaction() failed for SIGALRM"
+msgstr "Echec de la fonction sigaction() pour SIGALRM"
+
+#: src/ntpdate.c:272 src/ntpdate.c:307
+msgid "sendto() failed"
+msgstr "Echec de la fonction sendto()"
+
+#: src/ntpdate.c:274
+#, c-format
+msgid "sendto(): [error %d]"
+msgstr "sendto(): [erreur %d]"
+
+#: src/ntpdate.c:281
+#, c-format
+msgid "Connected to '%s'"
+msgstr "Connecté à '%s'"
+
+#: src/ntpdate.c:290
+#, c-format
+msgid "Attempt receive with timeout %ds"
+msgstr "Attente de réception avec un délai de %d"
+
+#: src/ntpdate.c:300
+#, c-format
+msgid "Timed out, %d more tries..."
+msgstr "Délai expiré, %d nouvelle(s) tentative(s)..."
+
+#: src/ntpdate.c:313
+#, c-format
+msgid "No Response, %d tries"
+msgstr "Pas de réponses, %d tentative(s)"
+
+#: src/ntpdate.c:318
+msgid "recvfrom() failed"
+msgstr "Echec de la fonction recvfrom()"
+
+#: src/ntpdate.c:325
+msgid "Cool, I had an response!"
+msgstr "Super, j'ai eu une réponse !"
+
+#: src/ntpdate.c:361
+#, c-format
+msgid "UNIX time: %ld"
+msgstr "Temps UNIX: %ld"
+
+#: src/ntpdate.c:367
+#, c-format
+msgid "Time (GMT0): %s"
+msgstr "Temps (GMT0): %s"
+
+#: src/ntpdate.c:380
+#, c-format
+msgid "EuropeanSummerTime() failed: [error %d]"
+msgstr "Echec de la fonction EuropeanSummerTime(): [erreur %d]"
+
+#: src/ntpdate.c:388
+#, c-format
+msgid "European Summer Time start at: %s"
+msgstr "L'horaire d'été commence le: %s"
+
+#: src/ntpdate.c:392
+#, c-format
+msgid "European Summer Time end at  : %s"
+msgstr "L'horaire d'été finit le: %s"
+
+#: src/ntpdate.c:396
+msgid "EST is activated"
+msgstr "L'horaire d'été est activé"
+
+#: src/ntpdate.c:414
+#, c-format
+msgid "Time (new) : %s"
+msgstr "Nouveau temps: %s"
+
+#: src/ntpdate.c:415
+#, c-format
+msgid "System time is %d seconds off"
+msgstr "L'heure système est décalé de %d seconde(s)"
+
+#: src/ntpdate.c:422
+msgid "Set time of day is not necessary"
+msgstr "L'ajustement de la date et de l'heure n'est pas nécessaire."
+
+#: src/ntpdate.c:425
+msgid "DEBUG ON: no set time of day activated."
+msgstr "DEBUG ON: l'ajustement n'a pas été réalisé."
+
+#: src/ntpdate.c:439
+msgid "Set time of day failed !"
+msgstr "L'ajustement de la date et de l'heure n'a pas abouti"
+
+#: src/ntpdate.c:442
+#, c-format
+msgid "settimeofday() failed, [error %d]: %s"
+msgstr "Echec de la fonction settimeofday(), [erreur %d]: %s"
+
+#: src/ntpdate.c:448
+msgid "Set time of day OK"
+msgstr "L'ajustement de la date et de l'heure a réussi"
+
+#: src/ntpdate.c:455
+#, c-format
+msgid "Close socket: %d"
+msgstr "Fermeture de la socket: %d"
+
+#: src/trace.c:94
+#, c-format
+msgid "%s trace init failed"
+msgstr "%s échec de l'initialisation du module de trace"
+
+#: src/trace.c:115 src/trace.c:156 src/trace.c:208
+#, c-format
+msgid "%s log type not implemented."
+msgstr "%s ce type de journal n'est pas encore implémenté."

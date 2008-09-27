@@ -1,0 +1,4 @@
+# List of source files which contain translatable strings.
+src/main.c
+src/ntpdate.c
+src/trace.c

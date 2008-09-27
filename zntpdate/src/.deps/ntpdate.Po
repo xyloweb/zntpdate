@@ -34,7 +34,8 @@ ntpdate.o ntpdate.o: ntpdate.c ../config.h /usr/include/stdio.h \
   /usr/include/bits/sigaction.h /usr/include/bits/sigcontext.h \
   /usr/include/asm/sigcontext.h /usr/include/asm-i486/sigcontext.h \
   /usr/include/linux/compiler.h /usr/include/bits/sigstack.h \
-  /usr/include/bits/sigthread.h main.h trace.h
+  /usr/include/bits/sigthread.h gettext.h /usr/include/libintl.h \
+  /usr/include/locale.h /usr/include/bits/locale.h main.h trace.h
 
 ../config.h:
 
@@ -183,6 +184,14 @@ ntpdate.o ntpdate.o: ntpdate.c ../config.h /usr/include/stdio.h \
 /usr/include/bits/sigstack.h:
 
 /usr/include/bits/sigthread.h:
+
+gettext.h:
+
+/usr/include/libintl.h:
+
+/usr/include/locale.h:
+
+/usr/include/bits/locale.h:
 
 main.h:
 
