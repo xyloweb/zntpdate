@@ -259,7 +259,7 @@ static void usage(void)
 {
   write_version();
   fprintf( stdout,
-             "This tool is like ntpdate but I added a feature to make an offset before set system date\n"
+           _("This tool is like ntpdate but I added a feature to make an offset before set system date\n"
              "and time. It is particulary interesting when your system is configured without TIMEZONE\n"
              "and when you could not set nothing else but GMT0.\n"
              "If you are localized into an European Summer Time zone don't forget to set -E option so\n"
@@ -291,9 +291,10 @@ static void usage(void)
              "              zntpdate -Ev -O+3600 pool.ntp.org\n"
              "     How to test znptdate without change date and time of your system?\n"
              "              zntpdate -dv pool.ntp.org\n"
+             )
            );
   exit(0);
- }
+}
 
 /**
  * \brief write application version and copyright
