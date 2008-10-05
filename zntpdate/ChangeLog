@@ -1,3 +1,22 @@
+v0.4.10 - 5 October 2008
+	
+Index: src/trace.c
+===================================================================
+RCS file: /cvsroot/zntpdate/zntpdate/src/trace.c,v
+retrieving revision 1.4
+diff -u -b -B -r1.4 trace.c
+--- src/trace.c	27 Sep 2008 20:06:29 -0000	1.4
++++ src/trace.c	5 Oct 2008 16:34:25 -0000
+@@ -88,7 +88,7 @@
+   trace_desc_t *id = NULL;
+   char *tmp = NULL;
+   
+-  id = (trace_desc_t *)calloc( (size_t)1, sizeof(id));
++  id = (trace_desc_t *)calloc( (size_t)1, sizeof(*id));
+   if(NULL == id) {
+     fprintf(stderr, "\n");
+     fprintf(stderr, _("%s trace init failed"), gLogSignature[eERROR_MSG_TYPE]);
+	
 2008-09-26  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* Makefile.am (SUBDIRS): Add po.
@@ -26,3 +45,4 @@ v0.4.4 - June 2008
 	
 v0.4.3 - Februry 2008
 	First version.
+

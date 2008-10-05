@@ -88,7 +88,7 @@ trace_desc_t *trace_init( TraceType tt)
   trace_desc_t *id = NULL;
   char *tmp = NULL;
   
-  id = (trace_desc_t *)calloc( (size_t)1, sizeof(id));
+  id = (trace_desc_t *)calloc( (size_t)1, sizeof(*id));
   if(NULL == id) {
     fprintf(stderr, "\n");
     fprintf(stderr, _("%s trace init failed"), gLogSignature[eERROR_MSG_TYPE]);
