@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zntpdate 0.4.8\n"
 "Report-Msgid-Bugs-To: public.jmm@free.fr\n"
-"POT-Creation-Date: 2008-10-07 21:47+0200\n"
+"POT-Creation-Date: 2009-01-27 22:11+0100\n"
 "PO-Revision-Date: 2008-10-07 21:47+0100\n"
 "Last-Translator: Jean-Michel MARINO <public.jmm@free.fr>\n"
 "Language-Team: Traducteur France <LL@li.org>\n"
@@ -17,44 +17,46 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:157
+#: src/main.c:162
 #, c-format
 msgid "%s No argument for\n"
 msgstr "%s Pas d'argument pour\n"
 
-#: src/main.c:182
+#: src/main.c:187
 #, c-format
 msgid "%s Missing parameter after flag -%c\n"
 msgstr "%s paramètre absent après l'option -%c\n"
 
-#: src/main.c:193
-#: src/main.c:202
+#: src/main.c:198 src/main.c:207
 #, c-format
 msgid "%s Invalid parameter <%s> for flag -%c\n"
 msgstr "%s Paramètre invalide <%s> pour l'option -%c\n"
 
-#: src/main.c:220
+#: src/main.c:225
 #, c-format
 msgid "%s Unknown flag: -%c\n"
 msgstr "%s Option inconnue: -%c\n"
 
-#: src/main.c:232
+#: src/main.c:237
 #, c-format
 msgid "%s IP address must be not null!\n"
 msgstr "%s L'adresse IP ne peut pas être nulle !\n"
 
-#: src/main.c:244
+#: src/main.c:249
 #, c-format
 msgid "%s No IP address specified\n"
 msgstr "%s L'adresse IP n'a pas été spécifiée\n"
 
-#: src/main.c:262
+#: src/main.c:267
 #, c-format
 msgid ""
-"This tool is like ntpdate but I added a feature to make an offset before set system date\n"
-"and time. It is particulary interesting when your system is configured without TIMEZONE\n"
+"This tool is like ntpdate but I added a feature to make an offset before set "
+"system date\n"
+"and time. It is particulary interesting when your system is configured "
+"without TIMEZONE\n"
 "and when you could not set nothing else but GMT0.\n"
-"If you are localized into an European Summer Time zone don't forget to set -E option so\n"
+"If you are localized into an European Summer Time zone don't forget to set -"
+"E option so\n"
 "than one hour will be automatically added in summer.\n"
 "\n"
 "Usage: zndtpdate [options] host\n"
@@ -62,16 +64,20 @@ msgid ""
 " host         hostname or IP address of NTP server\n"
 " options:\n"
 "  .configuration:\n"
-"     -o v     Specify the NTP version for outgoint packets as the integer version,  which\n"
-"              can  be 1 or 2. The default is 3. This allows ntpdate to be used with older\n"
+"     -o v     Specify the NTP version for outgoint packets as the integer "
+"version,  which\n"
+"              can  be 1 or 2. The default is 3. This allows ntpdate to be "
+"used with older\n"
 "              NTP versions.\n"
 "     -O[+-]n  Offset to add before set date, indicate +/- value.\n"
 "     -E       Enable automatic correction for the summer time.\n"
 "  .verbose/debug:\n"
 "     -d       Enable the debugging mode, in which zntpdate will go\n"
 "              through all the steps, but do not adjust the local clock.\n"
-"     -s       Divert logging output from the standard output (default) to the system sys-\n"
-"              log facility. This is designed primarily for convenience of cron scripts.\n"
+"     -s       Divert logging output from the standard output (default) to "
+"the system sys-\n"
+"              log facility. This is designed primarily for convenience of "
+"cron scripts.\n"
 "     -v       Verbose mode. Information useful for\n"
 "              general debugging will also be printed.\n"
 "  .help/version:\n"
@@ -84,11 +90,15 @@ msgid ""
 "     How to test znptdate without change date and time of your system?\n"
 "              zntpdate -dv pool.ntp.org\n"
 msgstr ""
-"Cet outil est identique à ntpdate mais j'ai implémenté une fonctionnalité qui permet\n"
-"d'ajouter un offset en secondes avant de modifier la date et l'heure du système.\n"
-"C'est intéressant lorsque votre système est configuré sans TIMEZONE et en GMT0 alors\n"
+"Cet outil est identique à ntpdate mais j'ai implémenté une fonctionnalité "
+"qui permet\n"
+"d'ajouter un offset en secondes avant de modifier la date et l'heure du "
+"système.\n"
+"C'est intéressant lorsque votre système est configuré sans TIMEZONE et en "
+"GMT0 alors\n"
 "que, en réalité, vous n'êtes pas en GMT0.\n"
-"Si votre système se trouve dans une zone qui repose sur l'heure d'été, utilisez\n"
+"Si votre système se trouve dans une zone qui repose sur l'heure d'été, "
+"utilisez\n"
 "l'option -E qui ajoutera automatiquement une heure en été.\n"
 "\n"
 "Usage: zndtpdate [options] host\n"
@@ -96,40 +106,49 @@ msgstr ""
 " host         le nom du serveur NTP ou son adresse IP\n"
 " options:\n"
 "  .configuration:\n"
-"     -o v     Précise la version du protocole NTP à utiliser, qui peut être 1 ou 2.\n"
-"              La valeur par défaut est 3. Cela permet à ntpdate d'être utiliser avec\n"
+"     -o v     Précise la version du protocole NTP à utiliser, qui peut être "
+"1 ou 2.\n"
+"              La valeur par défaut est 3. Cela permet à ntpdate d'être "
+"utiliser avec\n"
 "              des anciennes version de serveur NTP.\n"
-"     -O[+-]n  L'offset à ajouter avant de configurer la date et l'heure, indiquez une\n"
+"     -O[+-]n  L'offset à ajouter avant de configurer la date et l'heure, "
+"indiquez une\n"
 "              valeur précédée des signes + ou -.\n"
 "     -E       Active la correction automatique pour l'heure d'été.\n"
 "  .verbeux/debug:\n"
-"     -d       Activer le mode debug, dans lequel zntpdate affichera l'ensemble\n"
-"              de ses actions, mais n'ajustera pas la date et l'heure système.\n"
-"     -s       Redirige la sortie du log de la sortie standard (par defaut) vers le sys-\n"
+"     -d       Activer le mode debug, dans lequel zntpdate affichera "
+"l'ensemble\n"
+"              de ses actions, mais n'ajustera pas la date et l'heure "
+"système.\n"
+"     -s       Redirige la sortie du log de la sortie standard (par defaut) "
+"vers le sys-\n"
 "              tème de log. C'est intéressant pour les scripts.\n"
-"     -v       Mode verbeux. Les informations utiles pour le débug seront également\n"
+"     -v       Mode verbeux. Les informations utiles pour le débug seront "
+"également\n"
 "              Affichées.\n"
 "  .help/version:\n"
 "     -h       Afficher cette aide sur les commandes de l'outil.\n"
 "     -V       Afficher la version de l'outil.\n"
 "\n"
 "Exemples:\n"
-"     Comment ajouter automatiquement une heure en hiver et deux heures en été ?\n"
+"     Comment ajouter automatiquement une heure en hiver et deux heures en "
+"été ?\n"
 "              zntpdate -Ev -O+3600 pool.ntp.org\n"
-"     Comment tester zntpdate sans changer la date et l'heure de votre système ?\n"
+"     Comment tester zntpdate sans changer la date et l'heure de votre "
+"système ?\n"
 "              zntpdate -dv pool.ntp.org\n"
 
-#: src/main.c:307
+#: src/main.c:312
 #, fuzzy, c-format
 msgid "Written by Jean-Michel Marino\n"
 msgstr "Ecrit par Jean-Michel Marino"
 
-#: src/main.c:308
+#: src/main.c:313
 #, c-format
 msgid "Report bugs to <%s>.\n"
 msgstr "Rapportez les bugs à <%s>.\n"
 
-#: src/main.c:311
+#: src/main.c:316
 msgid "Written by Jean-Michel Marino (public.jmm@free.fr)"
 msgstr "Ecrit par Jean-Michel Marino (public.jmm@free.fr)"
 
@@ -165,8 +184,7 @@ msgstr "Echec de la fonction sigfillset()"
 msgid "sigaction() failed for SIGALRM"
 msgstr "Echec de la fonction sigaction() pour SIGALRM"
 
-#: src/ntpdate.c:272
-#: src/ntpdate.c:307
+#: src/ntpdate.c:272 src/ntpdate.c:307
 msgid "sendto() failed"
 msgstr "Echec de la fonction sendto()"
 
@@ -268,15 +286,12 @@ msgstr "L'ajustement de la date et de l'heure a réussi"
 msgid "Close socket: %d"
 msgstr "Fermeture de la socket: %d"
 
-#: src/trace.c:94
+#: src/trace.c:100
 #, c-format
 msgid "%s trace init failed"
 msgstr "%s échec de l'initialisation du journal"
 
-#: src/trace.c:115
-#: src/trace.c:156
-#: src/trace.c:208
+#: src/trace.c:121 src/trace.c:162 src/trace.c:214
 #, c-format
 msgid "%s log type not implemented."
 msgstr "%s ce type de journal n'est pas encore implémenté."
-

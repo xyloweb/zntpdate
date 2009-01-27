@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: public.jmm@free.fr\n"
-"POT-Creation-Date: 2008-10-07 21:47+0200\n"
+"POT-Creation-Date: 2009-01-27 22:11+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,37 +16,37 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:157
+#: src/main.c:162
 #, c-format
 msgid "%s No argument for\n"
 msgstr ""
 
-#: src/main.c:182
+#: src/main.c:187
 #, c-format
 msgid "%s Missing parameter after flag -%c\n"
 msgstr ""
 
-#: src/main.c:193 src/main.c:202
+#: src/main.c:198 src/main.c:207
 #, c-format
 msgid "%s Invalid parameter <%s> for flag -%c\n"
 msgstr ""
 
-#: src/main.c:220
+#: src/main.c:225
 #, c-format
 msgid "%s Unknown flag: -%c\n"
 msgstr ""
 
-#: src/main.c:232
+#: src/main.c:237
 #, c-format
 msgid "%s IP address must be not null!\n"
 msgstr ""
 
-#: src/main.c:244
+#: src/main.c:249
 #, c-format
 msgid "%s No IP address specified\n"
 msgstr ""
 
-#: src/main.c:262
+#: src/main.c:267
 #, c-format
 msgid ""
 "This tool is like ntpdate but I added a feature to make an offset before set "
@@ -90,17 +90,17 @@ msgid ""
 "              zntpdate -dv pool.ntp.org\n"
 msgstr ""
 
-#: src/main.c:307
+#: src/main.c:312
 #, c-format
 msgid "Written by Jean-Michel Marino\n"
 msgstr ""
 
-#: src/main.c:308
+#: src/main.c:313
 #, c-format
 msgid "Report bugs to <%s>.\n"
 msgstr ""
 
-#: src/main.c:311
+#: src/main.c:316
 msgid "Written by Jean-Michel Marino (public.jmm@free.fr)"
 msgstr ""
 
@@ -238,12 +238,12 @@ msgstr ""
 msgid "Close socket: %d"
 msgstr ""
 
-#: src/trace.c:94
+#: src/trace.c:100
 #, c-format
 msgid "%s trace init failed"
 msgstr ""
 
-#: src/trace.c:115 src/trace.c:156 src/trace.c:208
+#: src/trace.c:121 src/trace.c:162 src/trace.c:214
 #, c-format
 msgid "%s log type not implemented."
 msgstr ""
