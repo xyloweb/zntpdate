@@ -1,9 +1,9 @@
 /**
  * \file trace.c
- * \brief Gestion des traces de l'application
+ * \brief Handle application log
  *
  * \author Jean-Michel Marino
- * \author Copyright (C) 2008 Jean-Michel Marino
+ * \author Copyright (C) 2008-2009 Jean-Michel Marino
  *
  * \note Options for source edition: tab = 2 spaces
  */
@@ -32,7 +32,9 @@
 /*!
   \brief "chug" the string (remove leading spaces and tab),
   and "chomp" it (avoid \n on last field).
-  ****************************************************************** 
+  ******************************************************************
+  *
+  * \param string string to clean
   */
 static void str_chug_chomp( char *string)
 {
@@ -51,7 +53,11 @@ static void str_chug_chomp( char *string)
 
 /*!
   \brief create and time stamp to the string
-  ****************************************************************** 
+  ******************************************************************
+  *
+  *\param logMess message to log
+  *
+  *\return message with timestamp
   */
 static char *create_timestamp_msg( const char *logMess)
 {

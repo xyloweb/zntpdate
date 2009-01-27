@@ -3,7 +3,7 @@
  * \brief Main program entry point
  *
  * \author Jean-Michel Marino
- * \author Copyright (C) 2008 Jean-Michel Marino
+ * \author Copyright (C) 2008-2009 Jean-Michel Marino
  *
  * \note Options for source edition: tab = 2 spaces
  */
@@ -91,6 +91,11 @@ static int  parse_cmd_line(int artgc, char **argv);
 /**
  * \brief Main program entry point
  *****************************************************
+ * 
+ * \param argc number of argument
+ * \param argv arguments list
+ *
+ * \return 0 if success else < 0
  */
 int main(int argc, char **argv)
 {
@@ -303,6 +308,11 @@ static void usage(void)
  */
 static void write_version(void)
 {
-  fprintf(stdout, "%s\n", gAppVersion);
-  fprintf(stdout, _("Written by Jean-Michel Marino (public.jmm@free.fr)\n"));
+#ifdef HAVE_CONFIG_H
+  printf( _("Written by Jean-Michel Marino\n"));
+  printf( _("Report bugs to <%s>.\n"), PACKAGE_BUGREPORT);
+#else
+  printf( "%s\n", gAppVersion);
+  printf( "%s\n", _("Written by Jean-Michel Marino (public.jmm@free.fr)"));
+#endif
 }

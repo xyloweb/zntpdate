@@ -3,7 +3,7 @@
  * \brief trace header
  *
  * \author Jean-Michel Marino
- * \author Copyright (C) 2008 Jean-Michel Marino
+ * \author Copyright (C) 2008-2009 Jean-Michel Marino
  *
  * \note Options for source edition: tab = 2 spaces
  */
@@ -54,7 +54,7 @@ typedef enum LogMsgType {
   // Option for the type of message
   eWITH_TIMESTAMP     = 1 << 8,   /*!< to add timestamp to the message                 */
   // next             = 1 << 9,
-  // etc              = 1 << 10 until 15
+  // etc...           = 1 << 10 until 15
 }LogMsgType;
 
 /*! must be completed at the same time that LogMsgType enum */

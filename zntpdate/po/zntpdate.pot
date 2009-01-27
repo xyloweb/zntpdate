@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: public.jmm@free.fr\n"
-"POT-Creation-Date: 2008-10-04 15:07+0200\n"
+"POT-Creation-Date: 2008-10-07 21:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -92,7 +92,16 @@ msgstr ""
 
 #: src/main.c:307
 #, c-format
-msgid "Written by Jean-Michel Marino (public.jmm@free.fr)\n"
+msgid "Written by Jean-Michel Marino\n"
+msgstr ""
+
+#: src/main.c:308
+#, c-format
+msgid "Report bugs to <%s>.\n"
+msgstr ""
+
+#: src/main.c:311
+msgid "Written by Jean-Michel Marino (public.jmm@free.fr)"
 msgstr ""
 
 #: src/ntpdate.c:183

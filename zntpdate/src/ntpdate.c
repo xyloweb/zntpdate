@@ -3,7 +3,7 @@
  * \brief ntpdate source
  *
  * \author Jean-Michel Marino
- * \author Copyright (C) 2008 Jean-Michel Marino
+ * \author Copyright (C) 2008-2009 Jean-Michel Marino
  *
  * \note Options for source edition: tab = 2 spaces
  */
@@ -78,7 +78,7 @@ typedef enum ntp_version {
 static int NTP_MODE_TYPE = 003;
 
 
-int tries = 0;                     /* Count of times sent - GLOBAL for signal-handler access */
+int tries = 0;                     /*!< Count of times sent - GLOBAL for signal-handler access */
 
 /*!
   \brief Handler for SIGALRM
@@ -157,7 +157,7 @@ static int EuropeanSummerTime( const int year, time_t *begin, time_t *end)
 int ntpdate(void)
 {
   int    err=0;
-  int    i;			                       // misc var i
+  int    i;			                           // misc var i
   int    s = -1;                           // socket
   time_t tmit = -1;                        // the time -- This is a time_t sort of
 
