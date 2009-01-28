@@ -1,6 +1,6 @@
-/*
- * TODO LIST
- */
+/*******************************************
+ ****             TODO LIST             ****
+ *******************************************/
 
-[OK] Update doc (doxygen)
-Add doc/Doxyfile to targz
+[OK-v0.4.11] Update doc (doxygen)
+[OK-v0.4.11] Add doc/Doxyfile to distrib
