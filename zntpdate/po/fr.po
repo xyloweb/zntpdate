@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zntpdate 0.4.8\n"
 "Report-Msgid-Bugs-To: public.jmm@free.fr\n"
-"POT-Creation-Date: 2009-01-27 22:11+0100\n"
+"POT-Creation-Date: 2009-01-28 07:55+0100\n"
 "PO-Revision-Date: 2008-10-07 21:47+0100\n"
 "Last-Translator: Jean-Michel MARINO <public.jmm@free.fr>\n"
 "Language-Team: Traducteur France <LL@li.org>\n"
@@ -138,17 +138,17 @@ msgstr ""
 "système ?\n"
 "              zntpdate -dv pool.ntp.org\n"
 
-#: src/main.c:312
+#: src/main.c:313
 #, fuzzy, c-format
 msgid "Written by Jean-Michel Marino\n"
 msgstr "Ecrit par Jean-Michel Marino"
 
-#: src/main.c:313
+#: src/main.c:314
 #, c-format
 msgid "Report bugs to <%s>.\n"
 msgstr "Rapportez les bugs à <%s>.\n"
 
-#: src/main.c:316
+#: src/main.c:317
 msgid "Written by Jean-Michel Marino (public.jmm@free.fr)"
 msgstr "Ecrit par Jean-Michel Marino (public.jmm@free.fr)"
 

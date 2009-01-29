@@ -309,6 +309,7 @@ static void usage(void)
 static void write_version(void)
 {
 #ifdef HAVE_CONFIG_H
+  printf( "%s\n", PACKAGE_STRING);
   printf( _("Written by Jean-Michel Marino\n"));
   printf( _("Report bugs to <%s>.\n"), PACKAGE_BUGREPORT);
 #else
