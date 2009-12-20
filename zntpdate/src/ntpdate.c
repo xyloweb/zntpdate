@@ -404,7 +404,7 @@ int ntpdate(void)
    ***************************************************************************
    */
   trace_write( gAppTrace, eINFO_MSG_TYPE, "Offset: %f", gAppOptions.m_offset);
-  tmit += gAppOptions.m_offset;
+  tmit += (time_t)gAppOptions.m_offset;
  
   /*
    * calculate new time and delta
