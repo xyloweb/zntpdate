@@ -3,7 +3,7 @@
  * \brief Main program entry point
  *
  * \author Jean-Michel Marino
- * \author Copyright (C) 2008-2009 Jean-Michel Marino
+ * \author Copyright (C) 2008-2010 Jean-Michel Marino
  *
  * \note Options for source edition: tab = 2 spaces
  */
@@ -75,7 +75,7 @@
 
 /* -- global variables -- */
 
-const char   *gAppVersion = "zntpdate v0.4.11"; /*!< Application version.   */
+const char   *gAppVersion = "zntpdate v0.4.12"; /*!< Application version.   */
 
 options_t    gAppOptions;                       /*!< Application options.   */
 trace_desc_t *gAppTrace;                        /*!< App log structure      */
