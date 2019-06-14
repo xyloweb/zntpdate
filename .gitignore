@@ -1,3 +1,4 @@
+.vscode/ipch
 src/.deps
 src/*.o
 src/Makefile
