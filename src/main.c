@@ -3,7 +3,7 @@
  * \brief Main program entry point
  *
  * \author Jean-Michel Marino
- * \author Copyright (C) 2008-2010 Jean-Michel Marino
+ * \author Copyright (C) 2008-2019 Jean-Michel Marino
  *
  * \note Options for source edition: tab = 2 spaces
  */
@@ -17,21 +17,29 @@
  *	mailto:coepark@free.fr
  *
  * Original page
- *	http://zntpdate.sourceforge.net
+ *	https://github.com/xyloweb/zntpdate
  *
  * License
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ *  MIT License
+ *  Copyright (c) 2019 Jean-Michel MARINO
+ * 
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
  *
  * Adapted from ntpdate.c
  *  Copyright (C) 2003  Tim Hogard
@@ -75,7 +83,7 @@
 
 /* -- global variables -- */
 
-const char   *gAppVersion = "zntpdate v0.4.12"; /*!< Application version.   */
+const char   *gAppVersion = "zntpdate v0.4.14"; /*!< Application version.   */
 
 options_t    gAppOptions;                       /*!< Application options.   */
 trace_desc_t *gAppTrace;                        /*!< App log structure      */
@@ -278,7 +286,7 @@ static void usage(void)
              "     -o v     Specify the NTP version for outgoint packets as the integer version,  which\n"
              "              can  be 1 or 2. The default is 3. This allows ntpdate to be used with older\n"
              "              NTP versions.\n"
-             "     -O[+-]n  Offset to add before set date, indicate +/- value.\n"
+             "     -O[+-]n  Offset to add before set date, indicate +/- value (seconds).\n"
              "     -E       Enable automatic correction for the summer time.\n"
              "  .verbose/debug:\n"
              "     -d       Enable the debugging mode, in which zntpdate will go\n"

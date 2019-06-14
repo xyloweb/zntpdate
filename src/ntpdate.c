@@ -3,13 +3,14 @@
  * \brief ntpdate source
  *
  * \author Jean-Michel Marino
- * \author Copyright (C) 2008-2009 Jean-Michel Marino
+ * \author Copyright (C) 2008-2019 Jean-Michel Marino
  *
  * \note Options for source edition: tab = 2 spaces
  */
 
 /*
  *=====================================================================
+ *
  * This code will query a ntp server for the local time and display
  * it.  it is intended to show how to use a NTP server as a time
  * source for a simple network connected device.
@@ -23,6 +24,9 @@
  * Converted to C Fri Feb 21 21:42:49 EAST 2003
  * this code is in the public domain.
  * it can be found here http://www.abnormal.com/~thogard/ntp/
+ * 
+ * also see https://lettier.github.io/posts/2016-04-26-lets-make-a-ntp-client-in-c.html
+ * 
  *=====================================================================
  */
 
@@ -38,31 +42,67 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#include <errno.h>        /* for perror                */
-#include <sys/select.h>   /* for timeval struct        */
-#include <time.h>         /* for mktime and struct tm  */
-#include <signal.h>       /* for sigaction()           */
+#include <errno.h>        /* for perror                     */
+#include <sys/select.h>   /* for timeval struct             */
+#include <time.h>         /* for mktime and struct tm       */
+#include <signal.h>       /* for sigaction()                */
 
-#include "gettext.h"      /* for gettext functions     */
+#include "gettext.h"      /* for gettext functions          */
 #define _(String) gettext (String)
 #define N_(String) String
 
 #include "main.h"
 #include "trace.h"
 
-/* -- other defines --*/
-#define MAXLEN               1024  /*!< check our buffers                       */
-#define NTPMODETYPE             3  /*!< NTP mode type client                    */
-#define SUMMERTIMEMONTHBEGIN    3  /*!< European Summer Time begin at March     */
-#define SUMMERTIMEMONTHEND     10  /*!< European Summer Time end at October     */
+#include "ntpdate.h"
 
-#define TIMEOUT_SECS           10  /*!< time for waiting response of NTP Server */
-#define NTP_MAXREQUEST_LEN     48  /*!< longest string for NTP request          */
-#define NTP_MAXREQUEST_TRIES    3  /*!< max retries to get response             */
+/* -- other defines --*/
+#define MAXLEN                    1024  /*!< check our buffers                       */
+#define NTPMODETYPE                  3  /*!< NTP mode type client                    */
+#define SUMMERTIMEMONTHBEGIN         3  /*!< European Summer Time begin at March     */
+#define SUMMERTIMEMONTHEND          10  /*!< European Summer Time end at October     */
+#define TIMEOUT_SECS                10  /*!< time for waiting response of NTP Server */
+#define NTP_MAXREQUEST_TRIES         3  /*!< max retries to get response             */
+
+#define NTP_TIMESTAMP_DELTA 2208988800  /*!< NTP time-stamp of 1 Jan 1970            */
 
 /* -- GLOBALES -- */
 extern options_t     gAppOptions;
 extern trace_desc_t* gAppTrace;
+
+/*!
+  \struct ntp_packet
+  \brief ntp packet structure
+  ******************************************************************  
+  */
+typedef struct ntp_packet {  
+  uint8_t li_vn_mode;       /*!<  8 bits. li, vn, and mode.                              
+                                       li.  Two bits.   Leap indicator.                     
+                                       vn.  Three bits. Version number of the protocol.     
+                                     mode.  Three bits. Client will pick mode 3 for client. */
+
+  uint8_t stratum;          /*!<  8 bits. Stratum level of the local clock.                 */
+  uint8_t poll;             /*!<  8 bits. Maximum interval between successive messages.     */
+  uint8_t precision;        /*!<  8 bits. Precision of the local clock.                     */
+
+  uint32_t rootDelay;       /*!<  32 bits. Total round trip delay time.                     */
+  uint32_t rootDispersion;  /*!<  32 bits. Max error aloud from primary clock source.       */
+  uint32_t refId;           /*!<  32 bits. Reference clock identifier.                      */
+
+  uint32_t refTm_s;         /*!<  32 bits. Reference time-stamp seconds.                    */
+  uint32_t refTm_f;         /*!<  32 bits. Reference time-stamp fraction of a second.       */
+
+  uint32_t origTm_s;        /*!<  32 bits. Originate time-stamp seconds.                    */
+  uint32_t origTm_f;        /*!<  32 bits. Originate time-stamp fraction of a second.       */
+
+  uint32_t rxTm_s;          /*!<  32 bits. Received time-stamp seconds.                     */
+  uint32_t rxTm_f;          /*!<  32 bits. Received time-stamp fraction of a second.        */
+
+  uint32_t txTm_s;          /*!<  32 bits. The most important field the client cares about. 
+                                  Transmit time-stamp seconds.                              */
+  uint32_t txTm_f;          /*!<  32 bits. Transmit time-stamp fraction of a second.        */
+
+} ntp_packet;
 
 /*!
   \enum ntp_version
@@ -79,6 +119,9 @@ static int NTP_MODE_TYPE = 003;
 
 
 int tries = 0;                     /*!< Count of times sent - GLOBAL for signal-handler access */
+
+ntp_packet packet_sending = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+ntp_packet packet_receiving = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 /*!
   \brief Handler for SIGALRM
@@ -163,9 +206,12 @@ int ntpdate(void)
 
   char hostname[ktHOSTNAMELEN+1];
   int  portno = 123;                       // NTP is port 123
-  unsigned char msg[NTP_MAXREQUEST_LEN];   // = { eNTP_V1,0,0,0,0,0,0,0,0};  // the packet we send
-  unsigned long buf[MAXLEN];               // the buffer we get back
-  unsigned      msgLen;
+  
+  //unsigned char msg[NTP_MAXREQUEST_LEN];   // = { eNTP_V1,0,0,0,0,0,0,0,0};  // the packet we send
+  //unsigned long buf[MAXLEN];               // the buffer we get back
+  //unsigned      msgLen;
+
+
   
   struct hostent     *he = NULL;           // host for gethostbyname
   struct protoent    *proto = NULL;	       // proto
@@ -236,10 +282,12 @@ int ntpdate(void)
    */
   
   // send the data with initializing first byte (NTP version and mode type client)
-  memset( msg, 0, sizeof(msg));
-  msg[0] = (gAppOptions.m_version == 1) ? eNTP_V1 :
-    (gAppOptions.m_version == 2) ? eNTP_V2 : eNTP_V3;
-  msg[0] += NTPMODETYPE;
+  //memset( msg, 0, sizeof(msg));
+  
+  //TODO : à revoir pour le déclarer dynamiquement dans l'objet packet
+  //msg[0] = (gAppOptions.m_version == 1) ? eNTP_V1 :
+  //  (gAppOptions.m_version == 2) ? eNTP_V2 : eNTP_V3;
+  //msg[0] += NTPMODETYPE;
   
   if( gAppOptions.m_verbose) {
     trace_write( gAppTrace, eINFO_MSG_TYPE, _("NTP version: %d"), gAppOptions.m_version);
@@ -265,8 +313,14 @@ int ntpdate(void)
    * send to NTP server
    ***************************************************************************
    */ 
-  msgLen = sizeof(msg); 
-  i = sendto( s, msg, msgLen, 0, (struct sockaddr *)&server_addr, sizeof(server_addr));
+ 
+  memset( &packet_sending, 0, sizeof( ntp_packet ) );
+
+  //TODO: use 
+  // Set the first byte's bits to 00,011,011 for li = 0, vn = 3, and mode = 3. The rest will be left set to zero.
+  *( ( char * ) &packet_sending + 0 ) = 0x1b; // Represents 27 in base 10 or 00011011 in base 2.
+
+  i = sendto( s, &packet_sending, sizeof( ntp_packet ), 0, (struct sockaddr *)&server_addr, sizeof(server_addr));
   if( i == -1) {
     err = errno;
     trace_write( gAppTrace, eERROR_MSG_TYPE, _("sendto() failed"));
@@ -281,6 +335,7 @@ int ntpdate(void)
       trace_write( gAppTrace, eINFO_MSG_TYPE, _("Connected to '%s'"), hostname);
     }
   }
+ 
     
   /*
    * get the data back with timeout
@@ -291,8 +346,11 @@ int ntpdate(void)
     trace_flush( gAppTrace);
   }
 
-  alarm( TIMEOUT_SECS);        /* Set the timeout */
-  while( (i = recv( s, buf, sizeof(buf), 0)) < 0) {
+
+ //memset(buf, 0, sizeof(buf));
+
+  alarm( TIMEOUT_SECS);        // Set the timeout
+  while( (i = recv( s, &packet_receiving, sizeof(ntp_packet), 0)) < 0) {
     if( errno == EINTR) {                     // Alarm went off 
       if( tries < NTP_MAXREQUEST_TRIES) {     // incremented by signal handler
         
@@ -302,8 +360,8 @@ int ntpdate(void)
         }
         
         // trie to send NTP request
-        if( sendto( s, msg, msgLen, 0, (struct sockaddr *)&server_addr,
-                    sizeof(server_addr)) != msgLen) {
+        if( sendto( s, &packet_sending, sizeof(ntp_packet), 0, (struct sockaddr *)&server_addr,
+                    sizeof(server_addr)) != sizeof(ntp_packet)) {
           trace_write( gAppTrace, eERROR_MSG_TYPE, _("sendto() failed"));
         }
         
@@ -319,8 +377,9 @@ int ntpdate(void)
       goto BAIL;
     }
   }
-  /* recvfrom() got something --  cancel the timeout */
+  // recvfrom() got something --  cancel the timeout 
   alarm(0);
+
   if(gAppOptions.m_verbose) {
     trace_write( gAppTrace, eINFO_IN_MSG_TYPE, _("Cool, I had an response!"));
   }
@@ -330,20 +389,58 @@ int ntpdate(void)
    ***************************************************************************
    */
   if( gAppOptions.m_verbose) {
-    u_long id = ntohl(buf[3]);
+    u_long id = ntohl(packet_receiving.refId);
     trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "NTP.RefID: '0x%x'", id);
+    /*
     for( i = 0 ; i < 12 ; i++) {
       trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%.2d: 0x%.8x", i, ntohl(buf[i]));
     }	
+    */
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%s: 0x%.8x", "li_vn_mode", ntohl(packet_receiving.li_vn_mode));
+
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%s: 0x%.8x", "stratum", ntohl(packet_receiving.stratum));
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%s: 0x%.8x", "poll", ntohl(packet_receiving.poll));
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%s: 0x%.8x", "precision", ntohl(packet_receiving.precision));
+
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%s: 0x%.8x", "rootDelay", ntohl(packet_receiving.rootDelay));
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%s: 0x%.8x", "rootDispersion", ntohl(packet_receiving.rootDispersion));
+
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%s: 0x%.8x", "refTm_s", ntohl(packet_receiving.refTm_s));
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%s: 0x%.8x", "refTm_f", ntohl(packet_receiving.refTm_f));
+
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%s: 0x%.8x", "origTm_s", ntohl(packet_receiving.origTm_s));
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%s: 0x%.8x", "origTm_f", ntohl(packet_receiving.origTm_f));
+
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%s: 0x%.8x", "rxTm_s", ntohl(packet_receiving.rxTm_s));
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%s: 0x%.8x", "rxTm_f", ntohl(packet_receiving.rxTm_f));
+
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%s: 0x%.8x", "txTm_s", ntohl(packet_receiving.txTm_s));
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "%s: 0x%.8x", "txTm_f", ntohl(packet_receiving.rxTm_f));
   }
+
   /*
    * The high word of transmit time is the 10th word we get back
    * tmit is the time in seconds not accounting for network delays which
    * should be way less than a second if this is a local NTP server
    */
+  /*
   tmit = ntohl( (time_t)buf[10]);	//# get transmit time
+  //FIXME: use int32_t 
+  */
+
+  // These two fields contain the time-stamp seconds as the packet left the NTP server.
+  // The number of seconds correspond to the seconds passed since 1900.
+  // ntohl() converts the bit/byte order from the network's to host's "endianness".
+
+  packet_receiving.txTm_s = ntohl( packet_receiving.txTm_s ); // Time-stamp seconds.
+  packet_receiving.txTm_f = ntohl( packet_receiving.txTm_f ); // Time-stamp fraction of a second.
+
   if( gAppOptions.m_verbose) {
-    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "NTP.TransmitTime: 0x%.8x (%ld)", tmit, tmit);
+    trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "NTP.TransmitTime: 0x%.8x (%ld)", packet_receiving.txTm_s, packet_receiving.txTm_s);
+  }
+  if( packet_receiving.txTm_s <= 0 ) {
+    trace_write( gAppTrace, eERROR_MSG_TYPE, _("invalid transmit time"));
+    goto BAIL;
   }
   
   /*
@@ -356,7 +453,8 @@ int ntpdate(void)
    ***************************************************************************
    */
   
-  tmit -= 2208988800U;	
+   tmit = ( time_t ) ( packet_receiving.txTm_s - NTP_TIMESTAMP_DELTA );
+
   if( gAppOptions.m_verbose) {
     trace_write( gAppTrace, eINFO_IN_MSG_TYPE, _("UNIX time: %ld"), tmit);
   } 
