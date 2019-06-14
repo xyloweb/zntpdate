@@ -28,6 +28,6 @@ typedef struct options_t {
   float m_offset;                /*!< offset in seconds                          */  
   char m_host[ktHOSTNAMELEN+1];  /*!< NTP hostname or IP address                 */
   
-}options_t;
+} options_t;
 
 #endif /* MAIN_H_ */
