@@ -1,4 +1,7 @@
+./src/.deps
 ./src/Makefile
+./src/*.o
+./src/zntpdate
 config.h
 config.log
 config.status
