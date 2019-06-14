@@ -1,8 +1,10 @@
-./src/.deps
-./src/Makefile
-./src/*.o
-./src/zntpdate
+src/.deps
+src/*.o
+src/Makefile
+src/zntpdate
+[config.h].in
 config.h
 config.log
 config.status
 stamp-h1
+Makefile
