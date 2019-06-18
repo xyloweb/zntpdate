@@ -1,5 +1,6 @@
 .vscode/ipch
 *.Po
+autom4te.cache
 src/.deps
 src/*.o
 src/Makefile

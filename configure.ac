@@ -9,7 +9,7 @@ AC_CONFIG_HEADER([config.h])
 
 # Use gettext for localization
 AM_GNU_GETTEXT([external])
-ALL_LINGUAS=fr
+AM_GNU_GETTEXT_VERSION(0.19)
 
 # Checks for programs.
 AC_PROG_CC

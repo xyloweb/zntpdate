@@ -430,7 +430,7 @@ int ntpdate(void)
     trace_write( gAppTrace, eINFO_IN_MSG_TYPE, "NTP.TransmitTime: 0x%.8x (%ld)", packet_receiving.txTm_s, packet_receiving.txTm_s);
   }
   if( packet_receiving.txTm_s <= 0 ) {
-    trace_write( gAppTrace, eERROR_MSG_TYPE, _("invalid transmit time"));
+    trace_write( gAppTrace, eERROR_MSG_TYPE, _("Invalid transmit time"));
     goto BAIL;
   }
   

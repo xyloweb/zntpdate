@@ -7,7 +7,8 @@
 	"settings": {
 		"files.associations": {
 			"unistd.h": "c",
-			"stdlib.h": "c"
+			"stdlib.h": "c",
+			"gettext.h": "c"
 		}
 	}
 }

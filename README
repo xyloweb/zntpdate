@@ -15,5 +15,12 @@ Installation:
 	Do "make" to compile zntpdate.
 	Then (as root) do "make install".
 
+
+For mainteners only:
+	Localization with gettext
+		Go to ./po folder
+		Do "make zntpdate.po-update" to rebuild a new pot file
+
+
 Jean-Michel Marino
 14 Jun 2019

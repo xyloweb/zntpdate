@@ -14,7 +14,7 @@
  * zntpdate: a program set date/time with offset
  *
  * Jean-Michel Marino
- *	mailto:coepark@free.fr
+ *	mailto:public.jmm@gmail.com
  *
  * Original page
  *	https://github.com/xyloweb/zntpdate
@@ -322,6 +322,6 @@ static void write_version(void)
   printf( _("Report bugs to <%s>.\n"), PACKAGE_BUGREPORT);
 #else
   printf( "%s\n", gAppVersion);
-  printf( "%s\n", _("Written by Jean-Michel Marino (public.jmm@free.fr)"));
+  printf( "%s\n", _("Written by Jean-Michel Marino (public.jmm@gmail.com)"));
 #endif
 }

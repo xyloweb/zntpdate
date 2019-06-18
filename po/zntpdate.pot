@@ -1,52 +1,53 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Free Software Foundation, Inc.
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the zntpdate package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: codepark@free.fr\n"
-"POT-Creation-Date: 2009-12-20 13:49+0100\n"
+"Project-Id-Version: zntpdate 0.4.14\n"
+"Report-Msgid-Bugs-To: public.jmm@gmail.com\n"
+"POT-Creation-Date: 2019-06-18 17:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:162
+#: src/main.c:170
 #, c-format
 msgid "%s No argument for\n"
 msgstr ""
 
-#: src/main.c:187
+#: src/main.c:195
 #, c-format
 msgid "%s Missing parameter after flag -%c\n"
 msgstr ""
 
-#: src/main.c:198 src/main.c:207
+#: src/main.c:206 src/main.c:215
 #, c-format
 msgid "%s Invalid parameter <%s> for flag -%c\n"
 msgstr ""
 
-#: src/main.c:225
+#: src/main.c:233
 #, c-format
 msgid "%s Unknown flag: -%c\n"
 msgstr ""
 
-#: src/main.c:237
+#: src/main.c:245
 #, c-format
 msgid "%s IP address must be not null!\n"
 msgstr ""
 
-#: src/main.c:249
+#: src/main.c:257
 #, c-format
 msgid "%s No IP address specified\n"
 msgstr ""
 
-#: src/main.c:267
+#: src/main.c:275
 #, c-format
 msgid ""
 "This tool is like ntpdate but I added a feature to make an offset before set "
@@ -68,7 +69,7 @@ msgid ""
 "              can  be 1 or 2. The default is 3. This allows ntpdate to be "
 "used with older\n"
 "              NTP versions.\n"
-"     -O[+-]n  Offset to add before set date, indicate +/- value.\n"
+"     -O[+-]n  Offset to add before set date, indicate +/- value (seconds).\n"
 "     -E       Enable automatic correction for the summer time.\n"
 "  .verbose/debug:\n"
 "     -d       Enable the debugging mode, in which zntpdate will go\n"
@@ -90,150 +91,154 @@ msgid ""
 "              zntpdate -dv pool.ntp.org\n"
 msgstr ""
 
-#: src/main.c:313
+#: src/main.c:321
 #, c-format
 msgid "Written by Jean-Michel Marino\n"
 msgstr ""
 
-#: src/main.c:314
+#: src/main.c:322
 #, c-format
 msgid "Report bugs to <%s>.\n"
 msgstr ""
 
-#: src/main.c:317
-msgid "Written by Jean-Michel Marino (public.jmm@free.fr)"
+#: src/main.c:325
+msgid "Written by Jean-Michel Marino (public.jmm@gmail.com)"
 msgstr ""
 
-#: src/ntpdate.c:183
+#: src/ntpdate.c:228
 #, c-format
 msgid "Try NTP with host: %s"
 msgstr ""
 
-#: src/ntpdate.c:192
+#: src/ntpdate.c:237
 msgid "socket() failed"
 msgstr ""
 
-#: src/ntpdate.c:197
+#: src/ntpdate.c:242
 #, c-format
 msgid "Open socket: %d"
 msgstr ""
 
-#: src/ntpdate.c:225
+#: src/ntpdate.c:270
 #, c-format
 msgid "Try to connect to hostname: '%s' (%s)..."
 msgstr ""
 
-#: src/ntpdate.c:245
+#: src/ntpdate.c:295
 #, c-format
 msgid "NTP version: %d"
 msgstr ""
 
-#: src/ntpdate.c:254
+#: src/ntpdate.c:304
 msgid "sigfillset() failed"
 msgstr ""
 
-#: src/ntpdate.c:260
+#: src/ntpdate.c:310
 msgid "sigaction() failed for SIGALRM"
 msgstr ""
 
-#: src/ntpdate.c:272 src/ntpdate.c:307
+#: src/ntpdate.c:328 src/ntpdate.c:367
 msgid "sendto() failed"
 msgstr ""
 
-#: src/ntpdate.c:274
+#: src/ntpdate.c:330
 #, c-format
 msgid "sendto(): [error %d]"
 msgstr ""
 
-#: src/ntpdate.c:281
+#: src/ntpdate.c:337
 #, c-format
 msgid "Connected to '%s'"
 msgstr ""
 
-#: src/ntpdate.c:290
+#: src/ntpdate.c:347
 #, c-format
 msgid "Attempt receive with timeout %ds"
 msgstr ""
 
-#: src/ntpdate.c:300
+#: src/ntpdate.c:360
 #, c-format
 msgid "Timed out, %d more tries..."
 msgstr ""
 
-#: src/ntpdate.c:313
+#: src/ntpdate.c:373
 #, c-format
 msgid "No Response, %d tries"
 msgstr ""
 
-#: src/ntpdate.c:318
+#: src/ntpdate.c:378
 msgid "recvfrom() failed"
 msgstr ""
 
-#: src/ntpdate.c:325
+#: src/ntpdate.c:386
 msgid "Cool, I had an response!"
 msgstr ""
 
-#: src/ntpdate.c:361
+#: src/ntpdate.c:433
+msgid "Invalid transmit time"
+msgstr ""
+
+#: src/ntpdate.c:450
 #, c-format
 msgid "UNIX time: %ld"
 msgstr ""
 
-#: src/ntpdate.c:367
+#: src/ntpdate.c:456
 #, c-format
 msgid "Time (GMT0): %s"
 msgstr ""
 
-#: src/ntpdate.c:380
+#: src/ntpdate.c:469
 #, c-format
 msgid "EuropeanSummerTime() failed: [error %d]"
 msgstr ""
 
-#: src/ntpdate.c:388
+#: src/ntpdate.c:477
 #, c-format
 msgid "European Summer Time start at: %s"
 msgstr ""
 
-#: src/ntpdate.c:392
+#: src/ntpdate.c:481
 #, c-format
 msgid "European Summer Time end at  : %s"
 msgstr ""
 
-#: src/ntpdate.c:396
+#: src/ntpdate.c:485
 msgid "EST is activated"
 msgstr ""
 
-#: src/ntpdate.c:414
+#: src/ntpdate.c:503
 #, c-format
 msgid "Time (new) : %s"
 msgstr ""
 
-#: src/ntpdate.c:415
+#: src/ntpdate.c:504
 #, c-format
 msgid "System time is %d seconds off"
 msgstr ""
 
-#: src/ntpdate.c:422
+#: src/ntpdate.c:511
 msgid "Set time of day is not necessary"
 msgstr ""
 
-#: src/ntpdate.c:425
+#: src/ntpdate.c:514
 msgid "DEBUG ON: no set time of day activated."
 msgstr ""
 
-#: src/ntpdate.c:439
+#: src/ntpdate.c:528
 msgid "Set time of day failed !"
 msgstr ""
 
-#: src/ntpdate.c:442
+#: src/ntpdate.c:531
 #, c-format
 msgid "settimeofday() failed, [error %d]: %s"
 msgstr ""
 
-#: src/ntpdate.c:448
+#: src/ntpdate.c:537
 msgid "Set time of day OK"
 msgstr ""
 
-#: src/ntpdate.c:455
+#: src/ntpdate.c:544
 #, c-format
 msgid "Close socket: %d"
 msgstr ""
