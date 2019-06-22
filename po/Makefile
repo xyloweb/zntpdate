@@ -12,7 +12,7 @@
 GETTEXT_MACRO_VERSION = 0.19
 
 PACKAGE = zntpdate
-VERSION = 0.4.15
+VERSION = 0.4.16
 PACKAGE_BUGREPORT = public.jmm@gmail.com
 
 SED = /usr/bin/sed
@@ -236,7 +236,7 @@ $(DOMAIN).pot-update: $(POTFILES) $(srcdir)/POTFILES.in remove-potcdate.sed
 	      --files-from=$(srcdir)/POTFILES.in \
 	      --copyright-holder='$(COPYRIGHT_HOLDER)' \
 	      --package-name="$${package_prefix}zntpdate" \
-	      --package-version='0.4.15' \
+	      --package-version='0.4.16' \
 	      --msgid-bugs-address="$$msgid_bugs_address" \
 	    ;; \
 	esac

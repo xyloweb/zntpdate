@@ -1,3 +1,6 @@
+v0.4.16 - 22 Jully 2019
+    Cleaning code and distrib optimization
+
 v0.4.12 - 20 December 2009
 	Fixed a bug in adding the offset before changing the date and time of the system.
 
