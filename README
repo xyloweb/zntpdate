@@ -8,19 +8,38 @@ Requires:
 	Working compiler, libc and socket lib.
 
 Installation:
-	Do "./configure --help" and decide what options you want. The
-	default should be suitable for most SCO and Linux systems.
-	Then run the configure script.
+	If you want to install zntpdate from source, proceed as follows:
 
-	Do "make" to compile zntpdate.
-	Then (as root) do "make install".
+	0) Run ./autogen.sh (only if you got the source from Github).
 
+	1) Run ./configure with the correct arguments. (see: ./configure --help)
+	2) Run make to compile zntpdate
+	3) Then (as root) do "make install".
 
 For mainteners only:
 	Localization with gettext
 		Go to ./po folder
 		Do "make zntpdate.po-update" to rebuild a new pot file
 
+Usage:
+	zntpdate -h for usage help
+
+Credits:
+	Inspired by Tim Hogard code
+
+	This code will query a ntp server for the local time and display
+    it.  it is intended to show how to use a NTP server as a time
+    source for a simple network connected device.
+    This is the C version.  The orignal was in Perl
+ 
+    For better clock management see the offical NTP info at:
+    http://www.eecis.udel.edu/~mills/ntp.html
+ 
+    written by Tim Hogard (thogard@abnormal.com)
+    Thu Sep 26 13:35:41 EAST 2002
+    Converted to C Fri Feb 21 21:42:49 EAST 2003
+    this code is in the public domain.
+    it can be found here http://www.abnormal.com/~thogard/ntp/
 
 Jean-Michel Marino
-14 Jun 2019
+22 Jun 2019
